@@ -17,9 +17,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/Aks')
-.then(() => console.log('MongoDB connected to Aks database'))
-.catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect("mongodb+srv://ankitsinghse72_db_user:codewithaks123@cluster0.gjitan9.mongodb.net/adminankit")
+.then(()=>console.log("MongoDB Atlas connected"))
+.catch(err=>console.error("MongoDB connection error:", err));
 
 // API Route for contact form
 app.post('/api/contact', async (req, res) => {
