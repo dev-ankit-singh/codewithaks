@@ -13,8 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static('public'));
+
 
 // Connect to MongoDB
 mongoose.connect("mongodb+srv://ankitsinghse72_db_user:codewithaks123@cluster0.gjitan9.mongodb.net/adminankit")
@@ -45,6 +44,11 @@ app.post('/api/contact', async (req, res) => {
         res.status(500).json({ success: false, message: 'Server error. Please try again later.' });
     }
 });
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
+
 
 // Start server
 app.listen(PORT, () => {
