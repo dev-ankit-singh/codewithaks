@@ -41,38 +41,55 @@ mongoose.connect(MONGO_URI)
     .catch(err => console.error("MongoDB connection error:", err));
 
 // ─── Security Headers (Helmet) ────────────────────────────────────────────────
-app.use(helmet({
+app.use(
+  helmet({
     contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"],
-            scriptSrc: [
-                "'self'", "'unsafe-inline'",
-                "https://cdn.jsdelivr.net",
-                "https://code.jquery.com",
-                "https://unpkg.com",
-                "https://cdn.quilljs.com"
-            ],
-            styleSrc: [
-                "'self'", "'unsafe-inline'",
-                "https://cdn.jsdelivr.net",
-                "https://fonts.googleapis.com",
-                "https://cdnjs.cloudflare.com",
-                "https://unpkg.com",
-                "https://cdn.quilljs.com"
-            ],
-            fontSrc: [
-                "'self'",
-                "https://fonts.gstatic.com",
-                "https://cdnjs.cloudflare.com"
-            ],
-            imgSrc: ["'self'", "data:", "blob:", "https:"],
-            connectSrc: ["'self'"],
-            frameSrc: ["'none'"],
-            objectSrc: ["'none'"]
-        }
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://code.jquery.com",
+          "https://unpkg.com",
+          "https://cdn.quilljs.com"
+        ],
+
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://fonts.googleapis.com",
+          "https://cdnjs.cloudflare.com",
+          "https://unpkg.com",
+          "https://cdn.quilljs.com"
+        ],
+
+        imgSrc: [
+          "'self'",
+          "data:",
+          "blob:",
+          "https:"
+        ],
+
+        fontSrc: [
+          "'self'",
+          "data:",
+          "https://fonts.gstatic.com",
+          "https://cdnjs.cloudflare.com"
+        ],
+
+        connectSrc: ["'self'", "https:"],
+
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"]
+      }
     },
     crossOriginEmbedderPolicy: false
-}));
+  })
+);
 app.disable('x-powered-by');
 
 // ─── Core Middleware ──────────────────────────────────────────────────────────
