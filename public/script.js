@@ -167,3 +167,44 @@ $(document).ready(function() {
         });
     });
 });
+
+
+// typing text js start here 
+// typing-text
+
+
+
+
+  var typed = new Typed("#typing-text", {
+    strings: [
+      "FULL STACK DEVELOPER",
+      "FRONTEND DEVELOPER",
+      "BACKEND DEVELOPER",
+      "SEO DEVELOPER"
+    ],
+    typeSpeed: 60,     // typing speed
+    backSpeed: 40,     // deleting speed
+    backDelay: 1500,   // rukne ka time
+    loop: true         // repeat hota rahega
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// typing text js end here

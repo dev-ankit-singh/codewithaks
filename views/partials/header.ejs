@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= (typeof seo !=="undefined" && seo.title) ? seo.title : "Ankit Singh - Full Stack Developer" %>
+    </title>
+
+    <meta name="description"
+        content="<%= (typeof seo !== 'undefined' && seo.description) ? seo.description : 'Portfolio of Ankit Singh, a Full Stack Developer specializing in modern web technologies.' %>">
+    <meta name="keywords"
+        content="<%= (typeof seo !== 'undefined' && seo.keywords) ? seo.keywords : 'Ankit Singh, Full Stack Developer, React, Node.js' %>">
+    <meta name="author" content="Ankit Singh">
+    <meta name="robots"
+        content="<%= (typeof seo !== 'undefined' && seo.robots) ? seo.robots : 'index, follow, max-image-preview:large' %>">
+
+    <!-- Open Graph (SMO) Tags -->
+    <meta property="og:title"
+        content="<%= (typeof seo !== 'undefined' && seo.title) ? seo.title : 'Ankit Singh - Full Stack Developer' %>">
+    <meta property="og:description"
+        content="<%= (typeof seo !== 'undefined' && seo.description) ? seo.description : 'Full Stack Developer portfolio showcasing modern web development projects.' %>">
+    <meta property="og:image"
+        content="<%= (typeof seo !== 'undefined' && seo.image) ? seo.image : 'https://codewithaks.in/images/ankit-singh.webp' %>">
+    <meta property="og:url"
+        content="<%= (typeof seo !== 'undefined' && seo.url) ? seo.url : 'https://codewithaks.in' %>">
+    <meta property="og:type" content="<%= (typeof seo !== 'undefined' && seo.type) ? seo.type : 'website' %>">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title"
+        content="<%= (typeof seo !== 'undefined' && seo.title) ? seo.title : 'Ankit Singh - Full Stack Developer' %>">
+    <meta name="twitter:description"
+        content="<%= (typeof seo !== 'undefined' && seo.description) ? seo.description : 'Full Stack Developer portfolio showcasing modern web development projects.' %>">
+    <meta name="twitter:image"
+        content="<%= (typeof seo !== 'undefined' && seo.image) ? seo.image : 'https://codewithaks.in/images/ankit-singh.webp' %>">
+
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- <link rel="icon" type="image/png" href="/images/favicon.png"> -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="canonical" href="<%= (typeof seo !== 'undefined' && seo.url) ? seo.url : 'https://codewithaks.in/' %>">
+
+    <!-- Typing text change CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <!-- Custom CSS -->
+    <!-- <link rel="stylesheet" href="/style.css"> -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Preloader -->
+    <!-- <div id="aks-preloader">
+        <div class="loader-content">
+            <div class="spinner"></div>
+            <span class="letter">A</span>
+            <span class="letter">K</span>
+            <span class="letter">S</span>
+        </div>
+    </div> -->
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top px-lg-5 py-3 navbar-dark" id="navbar"
+        style="position: fixed !important; top: 0; left: 0; right: 0; z-index: 9990;">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/images/favicon.png" alt="Ankit Singh Full Stack Developer India"
+                    title="Ankit Singh Portfolio" class="me-2" style="width: 24px;">
+                <span class="fw-bold text-white fs-4" style="font-family: 'Outfit', sans-serif;">Ankit</span>
+            </a>
+            <button class="navbar-toggler border-0 shadow-none text-white" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <i class="fa-solid fa-bars fs-3"></i>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav gap-2 gap-lg-4">
+                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#about">About Me</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#skills-marquee">Skills</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#experience">Experience</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="d-none d-lg-block">
+                <a href="/#contact" class="btn btn-hire px-4 py-2 text-white fw-medium rounded-pill border-0 shadow-sm"
+                    style="background: linear-gradient(135deg, #4da6ff 0%, #2980b9 100%);">Hire Me <i
+                        class="fa-solid fa-angle-right ms-1 small"></i></a>
+            </div>
+        </div>
+    </nav>

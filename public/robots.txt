@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /dhanrubi/
+Disallow: /api/
 
-Sitemap: https://codewithaks.onrender.com/sitemap.xml
+Sitemap: https://codewithaks.in/sitemap.xml

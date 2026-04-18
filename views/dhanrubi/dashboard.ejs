@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard – CodeWithAKS</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;}
+        :root{--sidebar-w:240px;--bg:#0d0d14;--sidebar:#0f0f1a;--surface:#16162a;--surface2:#1a1a2e;--border:rgba(255,255,255,0.07);--primary:#4f46e5;--accent:#7c3aed;--text:#f1f1f1;--muted:#9ca3af;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;margin:0;}
+        .sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+        .sidebar-brand{padding:0 20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+        .sidebar-brand .icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+        .sidebar-brand span{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;}
+        .sidebar-nav{padding:16px 12px;flex:1;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin:16px 0 6px;}
+        .nav-item a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:all .15s;}
+        .nav-item a:hover,.nav-item a.active{background:rgba(79,70,229,.15);color:#a5b4fc;}
+        .nav-item a i{width:18px;text-align:center;}
+        .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border);}
+        .logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#fca5a5;text-decoration:none;font-size:14px;font-weight:500;transition:background .15s;}
+        .logout-btn:hover{background:rgba(239,68,68,.1);}
+        .main-content{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+        .topbar{background:rgba(13,13,20,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar h2{font-size:18px;font-weight:600;font-family:'Outfit',sans-serif;margin:0;}
+        .admin-badge{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);}
+        .admin-badge .dot{width:8px;height:8px;background:#10b981;border-radius:50%;}
+        .page-body{padding:28px;}
+        .welcome-banner{background:linear-gradient(135deg,rgba(79,70,229,.15) 0%,rgba(124,58,237,.1) 100%);border:1px solid rgba(79,70,229,.25);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+        .welcome-text h3{font-family:'Outfit',sans-serif;font-size:22px;font-weight:800;margin:0;background:linear-gradient(135deg,#a5b4fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .welcome-text p{font-size:13px;color:var(--muted);margin:4px 0 0;}
+        .welcome-icon{font-size:40px;opacity:.6;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s;}
+        .stat-card:hover{border-color:rgba(79,70,229,.4);}
+        .stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+        .stat-value{font-size:32px;font-weight:800;font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#a5b4fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .stat-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+        .stat-icon{float:right;font-size:20px;opacity:.3;margin-top:-38px;}
+        .actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+        .action-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:var(--text);transition:all .2s;display:flex;align-items:center;gap:14px;}
+        .action-card:hover{border-color:rgba(79,70,229,.4);background:rgba(79,70,229,.06);transform:translateY(-2px);}
+        .action-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+        .action-info h4{font-size:14px;font-weight:600;margin:0;}
+        .action-info p{font-size:12px;color:var(--muted);margin:2px 0 0;}
+        .section-title{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:24px 0 14px;}
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <span>AKS Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Management</div>
+            <div class="nav-item"><a href="/dhanrubi/dashboard" class="active"><i class="fa-solid fa-gauge"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="/dhanrubi/blogs"><i class="fa-solid fa-newspaper"></i> All Posts</a></div>
+            <div class="nav-item"><a href="/dhanrubi/add_blog"><i class="fa-solid fa-circle-plus"></i> New Post</a></div>
+            <div class="nav-item"><a href="/dhanrubi/contacts"><i class="fa-solid fa-envelope"></i> Contacts <% if (locals.unreadContactsCount > 0) { %><span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:auto;"><%= unreadContactsCount %></span><% } %></a></div>
+            <div class="nav-label">Account</div>
+            <div class="nav-item"><a href="/dhanrubi/change-password"><i class="fa-solid fa-key"></i> Change Password</a></div>
+            <div class="nav-label">Website</div>
+            <div class="nav-item"><a href="/" target="_blank"><i class="fa-solid fa-globe"></i> View Site</a></div>
+            <div class="nav-item"><a href="/blog" target="_blank"><i class="fa-solid fa-rss"></i> View Blog</a></div>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/dhanrubi/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <h2>Dashboard</h2>
+            <div class="admin-badge">
+                <div class="dot"></div>
+                <span>Logged in as <strong><%= adminUser %></strong></span>
+            </div>
+        </div>
+        <div class="page-body">
+            <!-- Welcome banner -->
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h3>Welcome back, <%= adminUser %>! 👋</h3>
+                    <p>Manage your blogs, view contacts, and keep your CMS running smoothly.</p>
+                </div>
+                <div class="welcome-icon">🛡️</div>
+            </div>
+
+            <!-- Live Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="stat-label">Total Posts</div><div class="stat-value" id="statTotal">–</div><div class="stat-sub">All blog posts</div><i class="fa-solid fa-newspaper stat-icon"></i></div>
+                <div class="stat-card"><div class="stat-label">Published</div><div class="stat-value" id="statPub">–</div><div class="stat-sub">Live on website</div><i class="fa-solid fa-eye stat-icon"></i></div>
+                <div class="stat-card"><div class="stat-label">Drafts</div><div class="stat-value" id="statDraft">–</div><div class="stat-sub">Pending review</div><i class="fa-solid fa-pen stat-icon"></i></div>
+                <div class="stat-card"><div class="stat-label">Contacts</div><div class="stat-value" id="statContacts">–</div><div class="stat-sub">Total messages</div><i class="fa-solid fa-envelope stat-icon"></i></div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="section-title">Quick Actions</div>
+            <div class="actions-grid">
+                <a href="/dhanrubi/add_blog" class="action-card">
+                    <div class="action-icon" style="background:rgba(79,70,229,.15);color:#818cf8;"><i class="fa-solid fa-circle-plus"></i></div>
+                    <div class="action-info"><h4>New Blog Post</h4><p>Create and publish content</p></div>
+                </a>
+                <a href="/dhanrubi/blogs" class="action-card">
+                    <div class="action-icon" style="background:rgba(16,185,129,.1);color:#34d399;"><i class="fa-solid fa-newspaper"></i></div>
+                    <div class="action-info"><h4>Manage Posts</h4><p>Edit, delete, toggle status</p></div>
+                </a>
+                <a href="/dhanrubi/contacts" class="action-card">
+                    <div class="action-icon" style="background:rgba(245,158,11,.1);color:#fbbf24;"><i class="fa-solid fa-envelope-open-text"></i></div>
+                    <div class="action-info"><h4>View Contacts</h4><p>Read & manage messages</p></div>
+                </a>
+                <a href="/dhanrubi/change-password" class="action-card">
+                    <div class="action-icon" style="background:rgba(239,68,68,.1);color:#fca5a5;"><i class="fa-solid fa-key"></i></div>
+                    <div class="action-info"><h4>Change Password</h4><p>Update your credentials</p></div>
+                </a>
+                <a href="/blog" target="_blank" class="action-card">
+                    <div class="action-icon" style="background:rgba(14,165,233,.1);color:#38bdf8;"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                    <div class="action-info"><h4>View Live Blog</h4><p>See how it looks publicly</p></div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadStats() {
+            try {
+                const [blogRes, contactRes] = await Promise.all([
+                    fetch('/api/dhanrubi/blogs'),
+                    fetch('/api/dhanrubi/contacts-count')
+                ]);
+                const blogData = await blogRes.json();
+                if (blogData.success) {
+                    const blogs = blogData.blogs;
+                    document.getElementById('statTotal').textContent = blogs.length;
+                    document.getElementById('statPub').textContent = blogs.filter(b=>b.status==='Published').length;
+                    document.getElementById('statDraft').textContent = blogs.filter(b=>b.status==='Draft').length;
+                }
+                const contactData = await contactRes.json();
+                if (contactData.success) document.getElementById('statContacts').textContent = contactData.count;
+            } catch(e) { console.error(e); }
+        }
+        loadStats();
+    </script>
+</body>
+</html>

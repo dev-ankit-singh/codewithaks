@@ -1,0 +1,482 @@
+<!-- ════════════════════════════════════════════════════════════════════
+     PREMIUM FOOTER – CodeWithAKS
+     ════════════════════════════════════════════════════════════════════ -->
+<footer class="aks-footer" id="main-footer" role="contentinfo">
+
+    <!-- Gradient top border -->
+    <div class="footer-gradient-line"></div>
+
+    <div class="footer-container">
+
+        <!-- ── Row 1: Brand + CTAs + Quick Links + Social ── -->
+        <div class="footer-grid">
+
+            <!-- Brand & CTA -->
+            <div class="footer-col footer-brand-col">
+                <a href="/" class="footer-logo" aria-label="CodeWithAKS Home">
+                    <img src="/images/favicon.png" alt="CodeWithAKS Logo" width="32" height="32">
+                    <span class="footer-logo-text"><span class="footer-accent">Ankit Singh</span></span>
+                </a>
+                <p class="footer-tagline">
+                    Full Stack Developer | React · Node.js · MongoDB<br>
+                    Building <strong style="color:#a5b4fc;">scalable, SEO-optimized</strong> web experiences.
+                </p>
+
+
+                <!-- <div class="footer-cta-group">
+                    <a href="tel:+919199286971" class="footer-cta footer-cta-phone" aria-label="Call Ankit Singh">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>Call Now</span>
+                    </a>
+                    <a href="https://wa.me/919199286971?text=Hi%20Ankit%2C%20I%20found%20your%20portfolio%20and%20want%20to%20discuss%20a%20project!"
+                        target="_blank" rel="noopener noreferrer" class="footer-cta footer-cta-whatsapp"
+                        aria-label="WhatsApp Ankit Singh">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="/#contact" class="footer-cta footer-cta-contact" aria-label="Contact Ankit Singh">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Contact</span>
+                    </a>
+                </div> -->
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-col">
+                <h3 class="footer-col-heading">Quick Links</h3>
+                <nav aria-label="Footer quick links">
+                    <ul class="footer-links">
+                        <li><a href="/"><i class="fa-solid fa-chevron-right"></i> Home</a></li>
+                        <li><a href="/#about"><i class="fa-solid fa-chevron-right"></i> About Me</a></li>
+                        <li><a href="/#skills-marquee"><i class="fa-solid fa-chevron-right"></i> Skills</a></li>
+                        <li><a href="/#experience"><i class="fa-solid fa-chevron-right"></i> Experience</a></li>
+                        <li><a href="/blog"><i class="fa-solid fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="/#contact"><i class="fa-solid fa-chevron-right"></i> Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Blog Categories -->
+            <div class="footer-col">
+                <h3 class="footer-col-heading">Blog Categories</h3>
+                <nav aria-label="Footer blog categories">
+                    <ul class="footer-links">
+                        <li><a href="/blog-categories/artificial-intelligence"><i class="fa-solid fa-chevron-right"></i>
+                                Artificial Intelligence</a></li>
+                        <li><a href="/blog-categories/seo-and-digital-marketing"><i
+                                    class="fa-solid fa-chevron-right"></i> SEO & Digital
+                                Marketing</a></li>
+                        <li><a href="/blog-categories/full-stack-development"><i class="fa-solid fa-chevron-right"></i>
+                                Full
+                                Stack Dev</a></li>
+                        <li><a href="/blog-categories/react-js"><i class="fa-solid fa-chevron-right"></i> React JS</a>
+                        </li>
+                        <li><a href="/blog-categories/node-js-and-backend"><i class="fa-solid fa-chevron-right"></i>
+                                Node.js & Backend</a>
+                        </li>
+                        <li><a href="/blog-categories/career-and-jobs"><i class="fa-solid fa-chevron-right"></i> Career
+                                & Jobs</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Latest Posts -->
+            <div class="footer-col">
+                <h3 class="footer-col-heading">Latest Posts</h3>
+                <ul class="footer-posts" id="footerPosts" aria-label="Latest blog posts">
+                    <% if (typeof blogs !=='undefined' && blogs && blogs.length> 0) { %>
+                        <% blogs.slice(0, 5).forEach(function(post) { %>
+                            <li>
+                                <a href="/blog/<%= post.slug %>" class="footer-post-link">
+                                    <span class="footer-post-icon"><i class="fa-solid fa-file-lines"></i></span>
+                                    <span>
+                                        <%= post.title.length> 48 ? post.title.substring(0, 48) + '…' : post.title %>
+                                    </span>
+                                </a>
+                            </li>
+                            <% }); %>
+                                <% } else { %>
+                                    <li><a href="/blog" class="footer-post-link"><span class="footer-post-icon"><i
+                                                    class="fa-solid fa-rss"></i></span><span>View All Posts</span></a>
+                                    </li>
+                                    <% } %>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- ── Divider ── -->
+        <div class="footer-divider"></div>
+
+        <!-- ── Row 2: Social + Copyright ── -->
+        <!-- <div class="footer-bottom">
+            <div class="footer-social" aria-label="Social media links">
+                <a href="https://github.com/ankitsingh" target="_blank" rel="noopener noreferrer"
+                    class="footer-social-icon" aria-label="GitHub">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+                <a href="https://linkedin.com/in/ankitsingh" target="_blank" rel="noopener noreferrer"
+                    class="footer-social-icon" aria-label="LinkedIn">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a href="https://twitter.com/codewithaks" target="_blank" rel="noopener noreferrer"
+                    class="footer-social-icon" aria-label="Twitter / X">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="https://instagram.com/codewithaks" target="_blank" rel="noopener noreferrer"
+                    class="footer-social-icon" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://youtube.com/@codewithaks" target="_blank" rel="noopener noreferrer"
+                    class="footer-social-icon" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+            </div>
+
+            <p class="footer-copyright">
+                &copy; <span id="footerYear"></span> <strong>CodeWithAKS</strong> — Ankit Singh. All rights reserved.
+                Built with <i class="fa-solid fa-heart" style="color:#f43f5e;"></i> in India.
+            </p>
+
+            <div class="footer-legal">
+                <a href="/privacy-policy">Privacy Policy</a>
+                <span class="footer-dot">·</span>
+                <a href="/sitemap.xml" target="_blank">Sitemap</a>
+            </div>
+        </div> -->
+
+    </div>
+
+    <!-- Inline footer styles (self-contained to avoid conflicts) -->
+    <style>
+        .aks-footer {
+            background: #08080f;
+            color: #cbd5e1;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle gradient glow bg */
+        .aks-footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 350px;
+            background: radial-gradient(ellipse at center, rgba(79, 70, 229, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .footer-gradient-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4f46e5, #7c3aed, #0ea5e9, transparent);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 56px 24px 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+            gap: 40px;
+        }
+
+        /* Brand Column */
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 14px;
+        }
+
+        .footer-logo img {
+            border-radius: 8px;
+        }
+
+        .footer-logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #f1f1f1;
+            letter-spacing: -0.3px;
+        }
+
+        .footer-accent {
+            color: #818cf8;
+        }
+
+        .footer-tagline {
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        /* CTA Buttons */
+        .footer-cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .footer-cta-phone {
+            background: rgba(79, 70, 229, 0.12);
+            border-color: rgba(79, 70, 229, 0.25);
+            color: #a5b4fc;
+        }
+
+        .footer-cta-whatsapp {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.25);
+            color: #4ade80;
+        }
+
+        .footer-cta-contact {
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.25);
+            color: #38bdf8;
+        }
+
+        .footer-cta:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        /* Column headings */
+        .footer-col-heading {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6366f1;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 16px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-col-heading::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 28px;
+            height: 2px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+            border-radius: 2px;
+        }
+
+        /* Link lists */
+        .footer-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: color 0.2s, gap 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #a5b4fc;
+            gap: 10px;
+        }
+
+        .footer-links i {
+            font-size: 9px;
+            color: #4f46e5;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover i {
+            color: #818cf8;
+        }
+
+        /* Latest posts */
+        .footer-posts {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-post-link {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+            line-height: 1.45;
+            transition: color 0.2s;
+        }
+
+        .footer-post-link:hover {
+            color: #a5b4fc;
+        }
+
+        .footer-post-icon {
+            width: 26px;
+            height: 26px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 11px;
+            color: #818cf8;
+            transition: background 0.2s;
+        }
+
+        .footer-post-link:hover .footer-post-icon {
+            background: rgba(79, 70, 229, 0.2);
+        }
+
+        /* Divider */
+        .footer-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 40px 0 28px;
+        }
+
+        /* Bottom row */
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        /* Social icons */
+        .footer-social {
+            display: flex;
+            gap: 8px;
+        }
+
+        .footer-social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .footer-social-icon:hover {
+            background: rgba(79, 70, 229, 0.15);
+            border-color: rgba(79, 70, 229, 0.3);
+            color: #a5b4fc;
+            transform: translateY(-2px);
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: #4b5563;
+            margin: 0;
+        }
+
+        .footer-legal {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+
+        .footer-legal a {
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-legal a:hover {
+            color: #818cf8;
+        }
+
+        .footer-dot {
+            color: #374151;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-brand-col {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .footer-container {
+                padding: 40px 20px 24px;
+            }
+        }
+    </style>
+
+    <!-- Scripts (deferred) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <script src="/script.js" defer></script>
+
+    <script>
+        // Dynamic copyright year
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+    </script>
+</footer>
+
+</body>
+
+</html>

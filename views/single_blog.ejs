@@ -1,0 +1,614 @@
+<%- include('partials/header') %>
+
+
+    <style>
+        .single-blog {
+            --accent-blue: #3b82f6;
+            --bg-body: #f8fafc;
+            --text-heading: #0f172a;
+            --text-body: #475569;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-md: 12px;
+            --radius-lg: 24px;
+        }
+
+
+        .single-blog {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-body);
+            color: var(--text-body);
+            line-height: 1.8;
+            overflow: visible;
+        }
+
+        .single-blog h1,
+        .single-blog h2,
+        .single-blog h3,
+        .single-blog h4 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-heading);
+            font-weight: 700;
+        }
+
+        .single-blog a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        .single-blog .container {
+            max-width: 1300px;
+        }
+
+        /* --- Navbar --- */
+        .single-blog .site-nav {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .single-blog .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .single-blog .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        .single-blog .logo span {
+            color: var(--accent-blue);
+        }
+
+        .single-blog .nav-links {
+            display: flex;
+            gap: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .single-blog .nav-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* --- Hero Section --- */
+        .single-blog .hero-sectionsss {
+            position: relative;
+            height: 500px !important;
+            background: #0f172a;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .single-blog .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* height: 100%; */
+            object-fit: cover;
+            opacity: 0.4;
+        }
+
+        .single-blog .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.8));
+        }
+
+        .single-blog .hero-content {
+            position: relative;
+            z-index: 10;
+            color: #fff;
+            max-width: 900px;
+        }
+
+        .single-blog .hero-badge {
+            background: var(--accent-blue);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .single-blog .hero-title {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .single-blog .hero-desc {
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        /* --- Title Wrap (Overlap Layout) --- */
+        .single-blog .post-meta-strip {
+            background: var(--white);
+            padding: 30px 40px;
+            border-radius: var(--radius-md);
+            margin-top: -60px;
+            position: relative;
+            z-index: 20;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .single-blog .meta-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .single-blog .meta-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .single-blog .breadcrumb-custom {
+            font-size: 13px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+
+        .single-blog .breadcrumb-custom a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* --- Main Content Grid --- */
+        .single-blog .blog-body-wrap {
+            padding: 80px 0;
+        }
+
+        .single-blog .post-article {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 50px;
+            border: 1px solid var(--border-color);
+        }
+
+        .single-blog .post-article img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .single-blog .rich-content {
+            font-size: 18px;
+            color: #334155;
+        }
+
+        .single-blog .rich-content h2,
+        .single-blog .rich-content h3 {
+            margin: 40px 0 20px;
+        }
+
+        /* --- sing-blog-sidebar --- */
+        .single-blog .sing-blog-sidebar {
+            position: sticky;
+            top: 100px;
+        }
+
+        .single-blog .sing-blog-sing-blog-sidebar-widget {
+            background: var(--white);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .single-blog .sing-blog-widget-head {
+            font-size: 18px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent-blue);
+            display: inline-block;
+        }
+
+        .single-blog .sing-blog-recent-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .single-blog .sing-blog-recent-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .single-blog .recent-text h5 {
+            font-size: 14px;
+            margin: 0 0 5px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .single-blog .recent-text span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .single-blog .sing-blog-cat-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .single-blog .sing-blog-cat-list li {
+            margin-bottom: 15px;
+        }
+
+        .single-blog .sing-blog-cat-list a {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .single-blog .sing-blog-cat-list a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* --- Related Feed --- */
+        .single-blog .sing-blog-related-section {
+            padding: 80px 0;
+            background: #fff;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .single-blog .related-sing-blog-card {
+            transition: var(--transition);
+            border: none;
+            background: transparent;
+        }
+
+        .single-blog .related-sing-blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .single-blog .sing-blog-related-img {
+            width: 100%;
+            height: 220px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .single-blog .related-sing-blog-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Footer --- */
+        .single-blog footer {
+            padding: 80px 0 40px;
+            background: #0f172a;
+            color: #94a3b8;
+        }
+
+        .single-blog .footer-logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .single-blog .footer-logo span {
+            color: var(--accent-blue);
+        }
+
+        @media (max-width: 991px) {
+            .single-blog .hero-title {
+                font-size: 32px;
+            }
+
+            .single-blog .hero-sectionsss {
+                height: 400px;
+            }
+
+            .single-blog .post-meta-strip {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .single-blog .post-article {
+                padding: 30px;
+            }
+        }
+    </style>
+
+    </head>
+
+    <section class="single-blog">
+
+
+        <!-- Premium Hero Section -->
+        <header class="hero-sectionsss">
+            <% if (blog.image) { %>
+                <img src="/uploads/<%= blog.image %>" class="hero-bg" alt="<%= blog.title %>">
+                <% } %>
+                    <div class="hero-overlay"></div>
+                    <div class="container hero-content">
+                        <span class="hero-badge">
+                            <%= blog.category || 'Expert Insight' %>
+                        </span>
+                        <h1 class="hero-title" style="color:#fff;">
+                            <%= blog.title %>
+                        </h1>
+                        <p class="hero-desc">
+                            <%= blog.metaDescription
+                                || 'Detailed analysis and professional insights from the world of digital strategy and development.'
+                                %>
+                        </p>
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-primary px-4 py-2 border-0"
+                                style="background: var(--accent-blue); font-weight: 700;">SHARE ARTICLE</button>
+                            <a href="#content" class="text-white fw-bold d-flex align-items-center gap-2"
+                                style="font-size: 14px; text-decoration: none;">SCROLL TO READ <i
+                                    class="fas fa-arrow-down"></i></a>
+                        </div>
+                    </div>
+        </header>
+
+        <!-- Meta & Breadcrumb Strip -->
+        <div class="container">
+            <div class="post-meta-strip" id="content">
+                <div class="meta-info">
+                    <img src="https://ui-avatars.com/api/?name=Ankit+Singh&background=3b82f6&color=fff"
+                        alt="Ankit Singh">
+                    <div>
+                        <div style="color: var(--text-heading);">By Ankit Singh</div>
+                        <div style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">
+                            <%= new Date(blog.createdAt).toDateString() %> • 5 MIN READ
+                        </div>
+                    </div>
+                </div>
+                <nav class="breadcrumb-custom">
+                    <a href="/">HOME</a> <span class="mx-2">/</span>
+                    <a href="/blog">BLOG</a> <span class="mx-2">/</span>
+                    <span style="color: var(--accent-blue);">
+                        <%= blog.title.substring(0, 30) %>...
+                    </span>
+                </nav>
+            </div>
+        </div>
+
+        <main class="blog-body-wrap">
+            <div class="container">
+                <div class="row g-5">
+
+                    <!-- Main Post Column -->
+                    <div class="col-lg-8">
+                        <article class="post-article">
+                            <div class="rich-content">
+                                <%- blog.content %>
+                            </div>
+
+                            <!-- FAQ Section -->
+                            <% if (typeof faqData !=='undefined' && faqData && faqData.length> 0) { %>
+                                <div class="mt-5 pt-5 border-top">
+                                    <h3 class="mb-4">Common Questions</h3>
+                                    <div class="accordion accordion-flush" id="faqGroup">
+                                        <% faqData.forEach((item, idx)=> { %>
+                                            <div class="accordion-item mb-3 border rounded-3 overflow-hidden">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed fw-bold" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#ans-<%= idx %>">
+                                                        <%= item.question %>
+                                                    </button>
+                                                </h2>
+                                                <div id="ans-<%= idx %>" class="accordion-collapse collapse"
+                                                    data-bs-parent="#faqGroup">
+                                                    <div class="accordion-body text-secondary">
+                                                        <%= item.answer %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                                <% } %>
+                        </article>
+                    </div>
+
+                    <!-- Sticky sing-blog-sidebar -->
+                    <div class="col-lg-4">
+                        <aside class="sing-blog-sidebar">
+
+                            <!-- Recent Posts Widget -->
+                            <div class="sing-blog-sing-blog-sidebar-widget">
+                                <h4 class="sing-blog-widget-head">Recent Articles</h4>
+                                <% recentBlogs.forEach(rb=> { %>
+                                    <a href="/blog/<%= rb.slug %>" class="sing-blog-recent-item">
+                                        <% if (rb.image) { %>
+                                            <img src="/uploads/<%= rb.image %>" class="sing-blog-recent-thumb"
+                                                alt="<%= rb.title %>">
+                                            <% } else { %>
+                                                <div class="sing-blog-recent-thumb" style="background: #f1f5f9;"></div>
+                                                <% } %>
+                                                    <div class="recent-text">
+                                                        <span>
+                                                            <%= new Date(rb.createdAt).toLocaleDateString('en-US', {
+                                                                month: 'short' , day: 'numeric' }) %>
+                                                        </span>
+                                                        <h5>
+                                                            <%= rb.title %>
+                                                        </h5>
+                                                    </div>
+                                    </a>
+                                    <% }) %>
+                            </div>
+
+                            <!-- Category Widget (Dynamic) -->
+                            <div class="sing-blog-sing-blog-sidebar-widget">
+                                <h4 class="sing-blog-widget-head">More in <%= blog.category %>
+                                </h4>
+                                <ul class="sing-blog-cat-list">
+                                    <% categoryBlogs.forEach(cb=> { %>
+                                        <li>
+                                            <a href="/blog/<%= cb.slug %>">
+                                                <span>
+                                                    <%= cb.title.substring(0, 50) %>...
+                                                </span>
+                                                <i class="fas fa-chevron-right fs-xs"
+                                                    style="font-size: 10px; margin-top: 5px;"></i>
+                                            </a>
+                                        </li>
+                                        <% }) %>
+                                </ul>
+                            </div>
+                        </aside>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+        <!-- Random Related Blogs Feed -->
+        <section class="sing-blog-related-section">
+            <div class="container">
+                <h2 class="mb-5 text-center">Top Related Blogs</h2>
+                <div class="row g-4">
+                    <% randomBlogs.forEach(rb=> { %>
+                        <div class="col-md-4">
+                            <a href="/blog/<%= rb.slug %>" class="sing-blog-card related-sing-blog-card h-100">
+                                <% if (rb.image) { %>
+                                    <img src="/uploads/<%= rb.image %>" class="sing-blog-related-img"
+                                        alt="<%= rb.title %>">
+                                    <% } else { %>
+                                        <div class="sing-blog-related-img" style="background: #f1f5f9;"></div>
+                                        <% } %>
+                                            <div class="px-2">
+                                                <span class="badge bg-light text-primary mb-2">
+                                                    <%= rb.category %>
+                                                </span>
+                                                <h4>
+                                                    <%= rb.title %>
+                                                </h4>
+                                                <div class="text-muted sing-blog-small">
+                                                    <%= new Date(rb.createdAt).toDateString() %>
+                                                </div>
+                                            </div>
+                            </a>
+                        </div>
+                        <% }) %>
+                </div>
+            </div>
+        </section>
+
+    </section>
+
+    <!-- FAQ Schema -->
+    <% if (typeof faqData !=='undefined' && faqData && faqData.length> 0) { %>
+        <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        <% faqData.forEach((item, index) => { %>
+        {
+          "@type": "Question",
+          "name": "<%- item.question.replace(/"/g, '\\"') %>",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "<%- item.answer.replace(/"/g, '\\"') %>"
+          }
+        }<%- index < faqData.length - 1 ? ',' : '' %>
+        <% }) %>
+      ]
+    }
+    </script>
+        <% } %>
+
+            <!-- Breadcrumb Schema -->
+            <% if (typeof breadcrumbData !=='undefined' && breadcrumbData && breadcrumbData.length> 0) { %>
+                <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    <% breadcrumbData.forEach((item, index) => { %>
+    {
+      "@type": "ListItem",
+      "position": <%= index + 1 %>,
+      "name": "<%- item.name.replace(/"/g, '\\"') %>",
+      "item": "<%= item.url %>"
+    }<%- index < breadcrumbData.length - 1 ? ',' : '' %>
+    <% }) %>
+  ]
+}
+</script>
+                <% } %>
+
+                    <!-- Article & Review/Rating Schema -->
+                    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "<%- blog.title.replace(/"/g, '\\"') %>",
+      "description": "<%- (blog.metaDescription || '').replace(/"/g, '\\"') %>",
+      "image": "<%= blog.image ? `https://codewithaks.in/uploads/${blog.image}` : 'https://codewithaks.in/images/default.jpg' %>",
+      "author": {
+        "@type": "Person",
+        "name": "Ankit Singh",
+        "url": "https://codewithaks.in"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Ankit Singh",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://codewithaks.in/images/favicon.png"
+        }
+      },
+      "datePublished": "<%= new Date(blog.createdAt).toISOString() %>",
+      "dateModified": "<%= new Date(blog.updatedAt).toISOString() %>",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://codewithaks.in/blog/<%= blog.slug %>"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": <%= blog.ratingValue || 5 %>,
+        "reviewCount": <%= blog.ratingCount || 1 %>
+      }
+    }
+    </script>
+
+                    <%- include('partials/footer') %>

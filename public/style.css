@@ -590,3 +590,11 @@ a, button, input, textarea {
     .skill-pill span { font-size: 0.7rem !important; }
     .footer-section h2.display-5 { font-size: 1.2rem !important; }
 }
+
+
+/* typed-cursor */
+
+.typed-cursor{
+    display:none;
+}
+
