@@ -1,3 +1,4 @@
+app.set('trust proxy', 1);
 'use strict';
 
 // ─── Global Error Handlers ────────────────────────────────────────────────────
@@ -112,12 +113,12 @@ app.use(session({
         collectionName: 'admin_sessions',
         ttl: 2 * 60 * 60  // 2 hours
     }),
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 2 * 60 * 60 * 1000  // 2 hours
-    }
+   cookie: {
+    httpOnly: true,
+    secure: true,          
+    sameSite: 'lax', 
+    maxAge: 2 * 60 * 60 * 1000
+}
 }));
 
 // ─── View Engine ──────────────────────────────────────────────────────────────
