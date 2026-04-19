@@ -421,8 +421,10 @@ app.get("/dhanrubi", (req, res) => {
 // ── Login Page (GET) ──────────────────────────────────────────────────────────
 app.get("/dhanrubi/login", csrfProtection, (req, res) => {
     if (req.session && req.session.adminLoggedIn) return res.redirect('/dhanrubi/dashboard');
+
     res.render("dhanrubi/login", {
         error: null,
+        csrfToken: req.session.csrfToken, 
         seo: { title: "Admin Login", description: "", robots: "noindex, nofollow" }
     });
 });
