@@ -32,7 +32,7 @@ const Admin = require('./models/Admin');
 const { requireAdmin } = require('./middleware/auth');
 
 const app = express();
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 const PORT = process.env.PORT || 3000;
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -113,6 +113,7 @@ app.use(session({
         collectionName: 'admin_sessions',
         ttl: 2 * 60 * 60  // 2 hours
     }),
+    proxy: true,
     cookie: {
         httpOnly: true,
         secure: true,
@@ -393,7 +394,8 @@ const csrfProtection = (req, res, next) => {
         const token = (req.body && req.body._csrf) || req.headers['csrf-token'] || req.headers['x-csrf-token'];
         if (!token || token !== req.session.csrfToken) {
             // If it's a regular form submission, render error
-            if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+            const contentType = req.headers['content-type'] || '';
+            if (contentType.toLowerCase().includes('application/x-www-form-urlencoded')) {
                 return res.status(403).render("404", { message: 'Invalid CSRF token' });
             }
             return res.status(403).json({ success: false, message: 'Invalid CSRF token' });
@@ -789,5 +791,5 @@ app.use((req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
