@@ -1,4 +1,3 @@
-app.set('trust proxy', 1);
 'use strict';
 
 // ─── Global Error Handlers ────────────────────────────────────────────────────
@@ -33,6 +32,7 @@ const Admin = require('./models/Admin');
 const { requireAdmin } = require('./middleware/auth');
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3000;
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -42,55 +42,55 @@ mongoose.connect(MONGO_URI)
     .catch(err => console.error("MongoDB connection error:", err));
 
 // ─── Security Headers (Helmet) ────────────────────────────────────────────────
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       useDefaults: true,
-//       directives: {
-//         defaultSrc: ["'self'"],
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                defaultSrc: ["'self'"],
 
-//         scriptSrc: [
-//           "'self'",
-//           "'unsafe-inline'",
-//           "https://cdn.jsdelivr.net",
-//           "https://code.jquery.com",
-//           "https://unpkg.com",
-//           "https://cdn.quilljs.com"
-//         ],
+                scriptSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "https://cdn.jsdelivr.net",
+                    "https://code.jquery.com",
+                    "https://unpkg.com",
+                    "https://cdn.quilljs.com"
+                ],
 
-//         styleSrc: [
-//           "'self'",
-//           "'unsafe-inline'",
-//           "https://cdn.jsdelivr.net",
-//           "https://fonts.googleapis.com",
-//           "https://cdnjs.cloudflare.com",
-//           "https://unpkg.com",
-//           "https://cdn.quilljs.com"
-//         ],
+                styleSrc: [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "https://cdn.jsdelivr.net",
+                    "https://fonts.googleapis.com",
+                    "https://cdnjs.cloudflare.com",
+                    "https://unpkg.com",
+                    "https://cdn.quilljs.com"
+                ],
 
-//         imgSrc: [
-//           "'self'",
-//           "data:",
-//           "blob:",
-//           "https:"
-//         ],
+                imgSrc: [
+                    "'self'",
+                    "data:",
+                    "blob:",
+                    "https:"
+                ],
 
-//         fontSrc: [
-//           "'self'",
-//           "data:",
-//           "https://fonts.gstatic.com",
-//           "https://cdnjs.cloudflare.com"
-//         ],
+                fontSrc: [
+                    "'self'",
+                    "data:",
+                    "https://fonts.gstatic.com",
+                    "https://cdnjs.cloudflare.com"
+                ],
 
-//         connectSrc: ["'self'", "https:"],
+                connectSrc: ["'self'", "https:"],
 
-//         objectSrc: ["'none'"],
-//         frameAncestors: ["'none'"]
-//       }
-//     },
-//     crossOriginEmbedderPolicy: false
-//   })
-// );
+                objectSrc: ["'none'"],
+                frameAncestors: ["'none'"]
+            }
+        },
+        crossOriginEmbedderPolicy: false
+    })
+);
 app.disable('x-powered-by');
 
 // ─── Core Middleware ──────────────────────────────────────────────────────────
@@ -113,12 +113,12 @@ app.use(session({
         collectionName: 'admin_sessions',
         ttl: 2 * 60 * 60  // 2 hours
     }),
-   cookie: {
-    httpOnly: true,
-    secure: true,          
-    sameSite: 'lax', 
-    maxAge: 2 * 60 * 60 * 1000
-}
+    cookie: {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000  // 2 hours
+    }
 }));
 
 // ─── View Engine ──────────────────────────────────────────────────────────────
@@ -422,10 +422,8 @@ app.get("/dhanrubi", (req, res) => {
 // ── Login Page (GET) ──────────────────────────────────────────────────────────
 app.get("/dhanrubi/login", csrfProtection, (req, res) => {
     if (req.session && req.session.adminLoggedIn) return res.redirect('/dhanrubi/dashboard');
-
     res.render("dhanrubi/login", {
         error: null,
-        csrfToken: req.session.csrfToken, 
         seo: { title: "Admin Login", description: "", robots: "noindex, nofollow" }
     });
 });
@@ -791,5 +789,5 @@ app.use((req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
