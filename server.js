@@ -170,7 +170,7 @@ const upload = multer({
 // ─── Sanitize Helper ──────────────────────────────────────────────────────────
 const sanitizeBlogContent = (html) => sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'style',
         'figure', 'figcaption', 'pre', 'code', 'blockquote',
         'table', 'thead', 'tbody', 'tr', 'th', 'td', 'caption',
         'iframe', 'video', 'source'
@@ -187,7 +187,7 @@ const sanitizeBlogContent = (html) => sanitizeHtml(html, {
     },
     allowedSchemes: ['http', 'https', 'data', 'mailto'],
 
-    nonTextTags: ['script', 'style', 'noscript', 'textarea'],
+    nonTextTags: ['script', 'noscript', 'textarea'],
     disallowedTagsMode: 'discard'
 });
 
@@ -805,5 +805,5 @@ app.use((req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
