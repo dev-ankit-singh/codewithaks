@@ -346,8 +346,10 @@ app.get("/blog/:slug", async (req, res) => {
         ];
 
         // Reading time: avg 200 words/min
-        const wordCount = blog.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+        blog.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
         const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+        blog.content = sanitizeBlogContent(blog.content);
+
 
         res.render('single_blog', {
             blog,
