@@ -185,8 +185,12 @@ const sanitizeBlogContent = (html) => sanitizeHtml(html, {
         'pre': ['class'],
         'code': ['class']
     },
-    allowedSchemes: ['http', 'https', 'data', 'mailto']
+    allowedSchemes: ['http', 'https', 'data', 'mailto'],
+    
+    nonTextTags: ['script', 'style', 'noscript', 'textarea'], 
+    disallowedTagsMode: 'discard'
 });
+
 
 // ─── Slugify Helper ───────────────────────────────────────────────────────────
 function slugify(text) {
