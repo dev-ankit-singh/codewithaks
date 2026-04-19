@@ -148,9 +148,14 @@ const apiLimiter = rateLimit({
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, path.join(__dirname, 'public/uploads/')),
     filename: (req, file, cb) => {
-        const safeName = file.originalname.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9.\-_]/g, '');
-        cb(null, Date.now() + '-' + safeName);
-    }
+    const safeName = file.originalname
+        .replace(/\s+/g, '-')
+        .replace(/[^a-zA-Z0-9.\-_]/g, '');
+
+    const uniqueName = safeName.toLowerCase();
+
+    cb(null, uniqueName);
+}
 });
 const upload = multer({
     storage,
