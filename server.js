@@ -148,14 +148,14 @@ const apiLimiter = rateLimit({
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, path.join(__dirname, 'public/uploads/')),
     filename: (req, file, cb) => {
-    const safeName = file.originalname
-        .replace(/\s+/g, '-')
-        .replace(/[^a-zA-Z0-9.\-_]/g, '');
+        const safeName = file.originalname
+            .replace(/\s+/g, '-')
+            .replace(/[^a-zA-Z0-9.\-_]/g, '');
 
-    const uniqueName = safeName.toLowerCase();
+        const uniqueName = safeName.toLowerCase();
 
-    cb(null, uniqueName);
-}
+        cb(null, uniqueName);
+    }
 });
 const upload = multer({
     storage,
@@ -186,8 +186,8 @@ const sanitizeBlogContent = (html) => sanitizeHtml(html, {
         'code': ['class']
     },
     allowedSchemes: ['http', 'https', 'data', 'mailto'],
-    
-    nonTextTags: ['script', 'style', 'noscript', 'textarea'], 
+
+    nonTextTags: ['script', 'style', 'noscript', 'textarea'],
     disallowedTagsMode: 'discard'
 });
 
@@ -346,9 +346,12 @@ app.get("/blog/:slug", async (req, res) => {
         ];
 
         // Reading time: avg 200 words/min
-        blog.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
-        const readingTime = Math.max(1, Math.ceil(wordCount / 200));
         blog.content = sanitizeBlogContent(blog.content);
+        const wordCount = blog.content
+            .replace(/<[^>]+>/g, '')
+            .split(/\s+/)
+            .filter(Boolean).length;
+        const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
 
         res.render('single_blog', {
@@ -370,8 +373,8 @@ app.get("/blog/:slug", async (req, res) => {
             }
         });
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("SINGLE BLOG ERROR:", err);
+        res.status(500).send(err.message);
     }
 });
 
@@ -802,5 +805,5 @@ app.use((req, res) => {
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
