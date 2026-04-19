@@ -12,8 +12,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap"
         rel="stylesheet">
-    
-    
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
@@ -500,9 +500,12 @@
                                 <small style="color:var(--muted);">Current: <span id="currentImageName"></span></small>
                             </div>
                         </div>
-                       <div class="col-12">
-                        <label for="content">Content (HTML/CSS Supported) <span style="color:#ef4444;">*</span></label>
-                        <textarea class="form-control" id="content" rows="15" placeholder="Write your blog content here (HTML supported)…"></textarea>
+                        <div class="col-12">
+                            <label>Content <span style="color:#ef4444;">*</span></label>
+                            <!-- Quill Rich Text Editor -->
+                            <div id="quillEditor"></div>
+                            <!-- Hidden field for form submission -->
+                            <input type="hidden" id="content">
                         </div>
                     </div>
                 </div>
@@ -573,11 +576,27 @@
         </div>
     </div>
 
-    
-    
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script>
         // ── Quill initialization ─────────────────────────────────────────────────
-   
+        const quill = new Quill('#quillEditor', {
+            theme: 'snow',
+            placeholder: 'Write your blog content here… (supports rich formatting)',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'indent': '-1' }, { 'indent': '+1' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    ['clean']
+                ]
+            }
+        });
 
         // ── Edit Mode ────────────────────────────────────────────────────────────
         const urlParams = new URLSearchParams(window.location.search);
@@ -611,7 +630,7 @@
                 document.getElementById('ratingCount').value = b.ratingCount || '';
                 if (b.image) { document.getElementById('currentImageWrapper').style.display = 'block'; document.getElementById('currentImageName').textContent = b.image; }
                 // Set Quill content
-                document.getElementById("content").value = b.content || '';
+                quill.root.innerHTML = b.content || '';
                 const faqData = JSON.parse(b.faqSchema || '[]');
                 faqData.forEach(f => addFaq(f.question, f.answer));
                 const bcData = JSON.parse(b.breadcrumbSchema || '[]');
@@ -673,21 +692,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-      document.getElementById('blogForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+        document.getElementById('blogForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
 
-    const htmlContent = document.getElementById("content").value;
+            // Get Quill HTML content
+            const htmlContent = quill.root.innerHTML;
+            if (!htmlContent || quill.getText().trim().length === 0) {
+                showError('Content is required. Please write something in the editor.'); return;
+            }
+            document.getElementById('content').value = htmlContent;
 
-    if (!htmlContent.trim()) {
-        showError('Content is required. Please write something.');
-        return;
-    }
-
-    document.getElementById('content').value = htmlContent;
-
-    const title = document.getElementById('title').value.trim();
-    const slug = document.getElementById('slug').value.trim();
-    const enableBreadcrumb = document.getElementById('enableBreadcrumb').checked;
+            const title = document.getElementById('title').value.trim();
+            const slug = document.getElementById('slug').value.trim();
+            const enableBreadcrumb = document.getElementById('enableBreadcrumb').checked;
             const breadcrumbData = enableBreadcrumb
                 ? JSON.stringify([{ name: 'Home', url: 'https://codewithaks.in/' }, { name: 'Blog', url: 'https://codewithaks.in/blog/' }, { name: title, url: `https://codewithaks.in/blog/${slug}` }])
                 : '[]';
