@@ -500,13 +500,11 @@
                                 <small style="color:var(--muted);">Current: <span id="currentImageName"></span></small>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <label>Content <span style="color:#ef4444;">*</span></label>
-                            <!-- Quill Rich Text Editor -->
-                            <div id="quillEditor"></div>
-                            <!-- Hidden field for form submission -->
-                            <input type="hidden" id="content">
-                        </div>
+                        <div class="mb-4">
+                        <label class="form-label">Blog Post Description (Rich Text/HTML)</label>
+                        <textarea class="form-control" name="content" id="content" rows="10"
+                            placeholder="Write your content here..." required></textarea>
+                    </div>
                     </div>
                 </div>
                 <!-- SEO -->
