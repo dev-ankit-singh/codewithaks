@@ -49,7 +49,8 @@ app.use(
         contentSecurityPolicy: {
             useDefaults: true,
             directives: {
-                defaultSrc: ["'self'"],
+                // defaultSrc: ["'self'"],
+                defaultSrc: ["'self'", "https:"],
 
                 scriptSrc: [
                     "'self'",
@@ -335,9 +336,9 @@ app.get("/", async (req, res) => {
         res.render("index", {
             blogs,
             seo: {
-                title: "Ankit Singh – Full Stack Developer Portfolio | CodeWithAKS",
-                description: "Explore the portfolio of Ankit Singh – expert full-stack development in React, Node.js & MongoDB. Hire a skilled developer today.",
-                keywords: "Ankit Singh portfolio, full stack developer India, React developer, Node.js developer, hire developer",
+                title: "Ankit Singh – Full Stack Developer | codewithaks.in",
+                description: "Ankit Singh is a Full Stack Developer from India specializing in React.js, Node.js, MongoDB, Express.js, PostgreSQL, SEO optimization, and scalable web application development. Explore projects, blogs, and professional development services.",
+                keywords: "Ankit Singh, Ankit Kumar Singh, Full Stack Developer, React Developer, MERN Stack Developer, Node.js Developer India, MongoDB Developer, PostgreSQL Developer, JavaScript Developer Portfolio",
                 image: "https://codewithaks.in/images/ankit-singh.webp",
                 url: "https://codewithaks.in/",
                 type: "website",

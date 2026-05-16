@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Person",
+  "name":"Ankit Singh",
+  "url":"https://codewithaks.in",
+  "jobTitle":"Full Stack Developer",
+  "sameAs":[
+    "https://www.linkedin.com/in/ankit-singh72/"
+  ]
+}
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= (typeof seo !=="undefined" && seo.title) ? seo.title : "Ankit Singh - Full Stack Developer" %>
-    </title>
+    <title><%= (typeof seo !=="undefined" && seo.title) ? seo.title : "Ankit Singh - Full Stack Developer" %></title>
 
-    <meta name="description"
-        content="<%= (typeof seo !== 'undefined' && seo.description) ? seo.description : ' Ankit Singh, a Full Stack Developer specializing in modern web technologies.' %>">
-    <meta name="keywords"
-        content="<%= (typeof seo !== 'undefined' && seo.keywords) ? seo.keywords : 'Ankit Singh, Full Stack Developer, React, Node.js' %>">
-    <meta name="author" content="Ankit Singh">
-    <meta name="robots"
-        content="<%= (typeof seo !== 'undefined' && seo.robots) ? seo.robots : 'index, follow, max-image-preview:large' %>">
+    <meta name="description" content="<%= (typeof seo !== 'undefined' && seo.description) ? seo.description : ' Ankit Singh, a Full Stack Developer specializing in modern web technologies.' %>">
+
+    <meta name="keywords" content="<%= (typeof seo !== 'undefined' && seo.keywords) ? seo.keywords : 'Ankit Singh, Full Stack Developer, React, Node.js' %>">
+    <meta name="author" content="Ankit Singh Full Stack Developer">
+    <meta name="robots" content="<%= (typeof seo !== 'undefined' && seo.robots) ? seo.robots : 'index, follow, max-image-preview:large' %>">
 
     <!-- Open Graph (SMO) Tags -->
     <meta property="og:title"
