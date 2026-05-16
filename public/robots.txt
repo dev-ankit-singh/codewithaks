@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /dhanrubi/
+Disallow: /api/dhanrubi/
+
+Sitemap: https://codewithaks.in/sitemap.xml

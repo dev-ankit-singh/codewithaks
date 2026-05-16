@@ -1,0 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f9;
+    /* Fallback */
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Base Layout Container */
+#admin-wrapper {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-logo {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+}
+
+.sidebar-logo img {
+    max-width: 100%;
+    height: auto;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.sidebar-menu li {
+    padding: 0 15px;
+    margin-bottom: 5px;
+}
+
+.sidebar-menu li a {
+    display: block;
+    padding: 10px 15px;
+    color: #444;
+    text-decoration: none;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li a.active {
+    background-color: #d1d8df;
+    font-weight: 500;
+}
+
+/* Main Content Area */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #a0a0a0;
+    /* For welcome screen grey background */
+}
+
+.main-content.bg-light-grey {
+    background-color: #f8f9fa;
+    /* For inner pages */
+}
+
+/* Top Navbar */
+.top-navbar {
+    height: 50px;
+    background-color: #343a40;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    color: white;
+}
+
+.top-navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 14px;
+}
+
+/* Page Header (Teal color) */
+.page-header {
+    background-color: #17a2b8;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+/* Inner Layout for Blog/Add Pages */
+.inner-container {
+    display: flex;
+    padding: 20px;
+    gap: 20px;
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+}
+
+/* Sub-Sidebar */
+.sub-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.sub-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sub-sidebar ul li a {
+    display: block;
+    padding: 10px;
+    background-color: #e9ecef;
+    margin-bottom: 5px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.sub-sidebar ul li a.active {
+    background-color: #d1d8df;
+    border-left: 4px solid #17a2b8;
+}
+
+/* Main Content Dashboard block */
+.content-area {
+    flex-grow: 1;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0;
+}
+
+/* Table Enhancements */
+.table-header-dark {
+    background-color: #205c9e !important;
+    color: white;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
+    font-size: 48px;
+    font-weight: 300;
+    text-align: center;
+}
+
+/* Form Styles Override */
+.form-label {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-control,
+.form-select {
+    font-size: 14px;
+}
+
+/* Action Buttons */
+.btn-action {
+    padding: 2px 8px;
+    font-size: 12px;
+}
+
+/* Login/Register Screens legacy support */
+.bg-overlay {
+    background: #111;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.login-box {
+    width: 350px;
+    margin: 10vh auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    backdrop-filter: blur(10px);
+}
+
+.login-box h2 {
+    margin: 0 0 10px;
+    text-align: center;
+    color: #fff;
+}
+
+.login-box p {
+    margin: 0 0 20px;
+    text-align: center;
+    color: #ccc;
+    font-size: 14px;
+}
+
+.input-box {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    border: none;
+    border-bottom: 1px solid #fff;
+    outline: none;
+    background: transparent;
+}
+
+.input-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #fff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.input-box input:focus~label,
+.input-box input:valid~label {
+    top: -20px;
+    left: 0;
+    color: #0061ff;
+    font-size: 12px;
+}
+
+.login-box button {
+    width: 100%;
+    background: #0061ff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-box button:hover {
+    background: #004ecc;
+}

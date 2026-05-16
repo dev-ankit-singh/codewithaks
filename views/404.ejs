@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 – Page Not Found | CodeWithAKS</title>
+    <meta name="description" content="Oops! The page you're looking for doesn't exist. Head back to CodeWithAKS homepage.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --primary: #4f46e5;
+            --accent:  #7c3aed;
+            --cyan:    #0ea5e9;
+            --bg:      #06060f;
+            --text:    #f1f1f1;
+            --muted:   #6b7280;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            text-align: center;
+            padding: 24px;
+        }
+
+        /* ── Animated background ── */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+        }
+        .orb-1 { width: 600px; height: 600px; background: #4f46e5; top: -200px; right: -200px; animation: drift 12s ease-in-out infinite; }
+        .orb-2 { width: 500px; height: 500px; background: #7c3aed; bottom: -200px; left: -200px; animation: drift 15s ease-in-out infinite reverse; }
+        .orb-3 { width: 300px; height: 300px; background: #0ea5e9; top: 40%; left: 50%; transform: translate(-50%,-50%); animation: drift 10s ease-in-out infinite 2s; }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%       { transform: translate(30px, -20px) scale(1.05); }
+            66%       { transform: translate(-20px, 30px) scale(0.95); }
+        }
+
+        /* ── Grid lines ── */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(79,70,229,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79,70,229,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+        }
+
+        /* ── Content ── */
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── 404 number ── */
+        .error-code {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(100px, 20vw, 180px);
+            font-weight: 900;
+            line-height: 0.9;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            letter-spacing: -6px;
+            user-select: none;
+            animation: pulse404 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse404 {
+            0%, 100% { filter: brightness(1) drop-shadow(0 0 30px rgba(79,70,229,0.4)); }
+            50%       { filter: brightness(1.1) drop-shadow(0 0 60px rgba(124,58,237,0.6)); }
+        }
+
+        /* Floating icons inside 404 */
+        .error-icon-group {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        .float-icon {
+            position: absolute;
+            font-size: 20px;
+            animation: floatIcon 4s ease-in-out infinite;
+            opacity: 0.7;
+        }
+        .float-icon-1 { top: 10px; left: -50px; animation-delay: 0s; color: #818cf8; }
+        .float-icon-2 { top: 0px; right: -45px; animation-delay: 1s; color: #7c3aed; }
+        .float-icon-3 { bottom: 10px; left: -35px; animation-delay: 2s; color: #0ea5e9; }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%       { transform: translateY(-12px) rotate(10deg); }
+        }
+
+        .error-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0 20px;
+        }
+        .error-divider::before,
+        .error-divider::after {
+            content: '';
+            height: 1px;
+            width: 60px;
+            background: linear-gradient(90deg, transparent, rgba(79,70,229,0.5));
+        }
+        .error-divider::after { background: linear-gradient(270deg, transparent, rgba(79,70,229,0.5)); }
+        .error-divider span {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #4f46e5;
+            text-transform: uppercase;
+        }
+
+        h1.error-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(22px, 4vw, 32px);
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .error-desc {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ── Action buttons ── */
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary-404 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            text-decoration: none;
+            padding: 13px 28px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 24px rgba(79,70,229,0.35);
+        }
+        .btn-primary-404:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(79,70,229,0.5);
+            opacity: 0.95;
+        }
+
+        .btn-secondary-404 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--muted);
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-secondary-404:hover {
+            background: rgba(79,70,229,0.1);
+            border-color: rgba(79,70,229,0.3);
+            color: #a5b4fc;
+            transform: translateY(-2px);
+        }
+
+        /* ── Quick links ── */
+        .quick-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 24px;
+        }
+        .quick-nav a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .quick-nav a:hover { color: #a5b4fc; }
+        .quick-nav-dot { color: rgba(255,255,255,0.1); }
+    </style>
+</head>
+
+<body>
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-bg"></div>
+
+    <main class="content" role="main">
+        <!-- 404 Number -->
+        <div class="error-icon-group">
+            <div class="float-icon float-icon-1"><i class="fa-solid fa-magnifying-glass"></i></div>
+            <div class="float-icon float-icon-2"><i class="fa-solid fa-link-slash"></i></div>
+            <div class="float-icon float-icon-3"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="error-code" aria-label="Error 404">404</div>
+        </div>
+
+        <!-- Divider -->
+        <div class="error-divider"><span>Page Not Found</span></div>
+
+        <!-- Heading & Desc -->
+        <h1 class="error-title">Oops! This page doesn't exist.</h1>
+        <p class="error-desc">
+            The page you're looking for may have been moved, deleted, or the URL might be incorrect.
+            Let's get you back on track.
+        </p>
+
+        <!-- Action buttons -->
+        <div class="action-group">
+            <a href="/" class="btn-primary-404">
+                <i class="fa-solid fa-house"></i> Go to Homepage
+            </a>
+            <a href="/blog" class="btn-secondary-404">
+                <i class="fa-solid fa-rss"></i> Read the Blog
+            </a>
+        </div>
+
+        <!-- Quick nav -->
+        <nav class="quick-nav" aria-label="Quick navigation">
+            <a href="/#about"><i class="fa-solid fa-user"></i> About</a>
+            <span class="quick-nav-dot">·</span>
+            <a href="/#skills-marquee"><i class="fa-solid fa-code"></i> Skills</a>
+            <span class="quick-nav-dot">·</span>
+            <a href="/blog"><i class="fa-solid fa-newspaper"></i> Blog</a>
+            <span class="quick-nav-dot">·</span>
+            <a href="/#contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+        </nav>
+    </main>
+</body>
+</html>
