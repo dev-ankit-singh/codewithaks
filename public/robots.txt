@@ -2,8 +2,5 @@ User-agent: *
 Allow: /
 
 Disallow: /dhanrubi/
-Disallow: /admin/
-Disallow: /api/
-Disallow: /scratch/
 
 Sitemap: https://codewithaks.in/sitemap.xml
