@@ -9,44 +9,40 @@ $(window).on('load', function() {
 });
 
 $(document).ready(function() {
-    // Initialize AOS (Animate On Scroll)
-    AOS.init({
-        once: true, // whether animation should happen only once - while scrolling down
-        offset: 50, // offset (in px) from the original trigger point
-        duration: 800, // values from 0 to 3000, with step 50ms
-        easing: 'ease-out-cubic', // default easing for AOS animations
-    });
 
-    // Custom Cursor Logic
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
+    // Custom Cursor Logic — only on devices that support hover
+    if (window.matchMedia('(hover: hover)').matches) {
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
 
-    window.addEventListener('mousemove', function(e) {
-        const posX = e.clientX;
-        const posY = e.clientY;
+        if (cursorDot && cursorOutline) {
+            // Use CSS transform for performance — avoids creating new Animation objects
+            cursorDot.style.position = 'fixed';
+            cursorOutline.style.position = 'fixed';
 
-        cursorDot.style.left = `${posX}px`;
-        cursorDot.style.top = `${posY}px`;
+            window.addEventListener('mousemove', function(e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = posX + 'px';
+                cursorDot.style.top  = posY + 'px';
+                cursorOutline.style.left = posX + 'px';
+                cursorOutline.style.top  = posY + 'px';
+            }, { passive: true });
 
-        // Slight delay for the outline for a smooth trailing effect
-        cursorOutline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-    });
-
-    // Add hover effect to links and buttons
-    const hoverElements = document.querySelectorAll('a, button, input, textarea, .skill-item');
-    hoverElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-            cursorOutline.classList.add('cursor-hover');
-            cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        });
-        el.addEventListener('mouseleave', () => {
-            cursorOutline.classList.remove('cursor-hover');
-            cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
-        });
-    });
+            // Add hover effect to links and buttons
+            const hoverElements = document.querySelectorAll('a, button, input, textarea, .skill-item');
+            hoverElements.forEach(function(el) {
+                el.addEventListener('mouseenter', function() {
+                    cursorOutline.classList.add('cursor-hover');
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                });
+                el.addEventListener('mouseleave', function() {
+                    cursorOutline.classList.remove('cursor-hover');
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                });
+            });
+        }
+    }
 
     // Navbar Scroll Logic
     $(window).scroll(function() {

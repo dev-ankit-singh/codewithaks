@@ -1,0 +1,69 @@
+<%- include('partials/header') %>
+
+<main class="container my-5 py-5 aks-privacy-policy">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2.5rem;">Privacy Policy</h1>
+            <p class="text-muted mb-5">Last updated: <%= new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></p>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">1. Information We Collect</h2>
+                <p>We only collect information that you voluntarily provide to us when you fill out contact forms, subscribe to our newsletter, or leave comments on our blog. This may include your name, email address, phone number, and any other information you choose to provide.</p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">2. How We Use Your Information</h2>
+                <p>We use the information we collect to:</p>
+                <ul>
+                    <li>Respond to your inquiries and support requests</li>
+                    <li>Send you newsletters, updates, and promotional materials (if you have opted in)</li>
+                    <li>Improve our website and services</li>
+                    <li>Monitor and analyze usage and trends to improve your experience</li>
+                </ul>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">3. Cookies and Tracking Technologies</h2>
+                <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.</p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">4. Data Security</h2>
+                <p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal data, we cannot guarantee its absolute security.</p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">5. Third-Party Services</h2>
+                <p>We may employ third party companies and individuals to facilitate our Service ("Service Providers"), to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used. These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">6. Links to Other Sites</h2>
+                <p>Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
+            </section>
+
+            <section class="mb-5">
+                <h2 class="h4 text-primary fw-bold mb-3">7. Contact Us</h2>
+                <p>If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:ankitsingh.se72@gmail.com" class="text-primary text-decoration-none">ankitsingh.se72@gmail.com</a></p>
+            </section>
+        </div>
+    </div>
+</main>
+
+<style>
+    .aks-privacy-policy {
+        color: var(--text-body, #a0aec0);
+    }
+    .aks-privacy-policy h1, .aks-privacy-policy h2 {
+        color: var(--text-heading, #fff);
+    }
+    .aks-privacy-policy ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
+    .aks-privacy-policy li {
+        margin-bottom: 10px;
+    }
+</style>
+
+<%- include('partials/footer') %>

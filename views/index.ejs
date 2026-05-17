@@ -56,7 +56,7 @@
                     <div class="about-photo-wrapper h-100" style="min-height: 550px;">
                         <img src="/images/ankitsingh.webp" alt="Ankit Singh Full Stack Developer India"
                             title="Ankit Singh Portfolio" class="w-100 h-100 object-fit-cover"
-                            style="object-position: top center; loading:lazy">
+                            loading="lazy" style="object-position: top center;">
                         <!-- Gradient overlay on right edge to blend with right column -->
                         <div class="position-absolute top-0 end-0 h-100"
                             style="width: 80px; background: linear-gradient(to right, transparent, #1a1e29);"></div>
@@ -66,9 +66,9 @@
                 <!-- RIGHT: Details Column -->
                 <div class="col-lg-7 py-5 px-4 px-lg-5 aks-p-justify" data-aos="fade-left" data-aos-duration="1000"
                     data-aos-delay="200" style="background: #1a1e29;">
-                    <h3 class="fw-bold text-uppercase mb-3"
+                    <span class="fw-bold text-uppercase mb-3 d-block"
                         style="color: #4da6ff; letter-spacing: 2px; font-size: 0.9rem;">
-                        Who I Am</h3>
+                        Who I Am</span>
                     <h2 class="fw-bold text-white mb-3"
                         style="font-family: 'Outfit', sans-serif; font-size: clamp(1.8rem, 3vw, 2.5rem);">ABOUT ME</h2>
                     <div class="accent-line mb-4" style="width: 50px; height: 3px; background: #e74c3c;"></div>
@@ -160,8 +160,8 @@
     <!-- Tech Stack / Skills Section (Real Resume Data - Categorized) -->
     <section id="skills-marquee" class="skills-marquee-section py-5" style="background-color: #0f1319; color: #9ca3af;">
         <div class="container">
-            <h3 class="text-center fw-bold mb-2 opacity-75 fs-6 tracking-wide" data-aos="fade-up"
-                style="color: #4da6ff; letter-spacing: 3px;">WHAT I KNOW</h3>
+            <span class="text-center fw-bold mb-2 opacity-75 fs-6 tracking-wide d-block" data-aos="fade-up"
+                style="color: #4da6ff; letter-spacing: 3px;">WHAT I KNOW</span>
             <h2 class="text-center fw-bold mb-5 text-white"
                 style="font-family: 'Outfit', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem);" data-aos="fade-up"
                 data-aos-delay="100">My Technical Skills</h2>
@@ -701,28 +701,50 @@
 
     <%- include('partials/footer') %>
 
-        <script type="application/ld+json">
+<script type="application/ld+json">
 {
- "@context": "https://schema.org",
- "@type": "Person",
- "name": "Ankit Singh",
- "url": "https://codewithaks.in/",
- "image": "https://codewithaks.in/images/ankit-singh.webp",
- "jobTitle": "Full Stack Developer",
- "address": {
-   "@type": "PostalAddress",
-   "addressCountry": "India"
- },
- "sameAs": [
-   "https://www.linkedin.com/in/ankit-singh72/",
-   "https://github.com/dev-ankit-singh/codewithaks"
- ],
- "knowsAbout": [
-   "React.js",
-   "Node.js",
-   "PHP",
-   "MySQL",
-   "JavaScript"
- ]
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://codewithaks.in/#website",
+      "url": "https://codewithaks.in/",
+      "name": "CodeWithAKS",
+      "description": "Full Stack Developer portfolio and tech blog by Ankit Singh.",
+      "publisher": {
+        "@id": "https://codewithaks.in/#person"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://codewithaks.in/#person",
+      "name": "Ankit Singh",
+      "url": "https://codewithaks.in/",
+      "image": "https://codewithaks.in/images/ankit-singh.webp",
+      "jobTitle": "Full Stack Developer",
+      "description": "Ankit Singh is a Full Stack Developer from India specializing in React.js, Node.js, MongoDB, Express.js, PostgreSQL, and scalable web application development.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "India"
+      },
+      "alumniOf": {
+        "@type": "Organization",
+        "name": "Self Taught / Coding Bootcamps"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/ankit-singh72/",
+        "https://github.com/dev-ankit-singh/codewithaks"
+      ],
+      "knowsAbout": [
+        "React.js",
+        "Node.js",
+        "PHP",
+        "MySQL",
+        "JavaScript",
+        "MongoDB",
+        "SEO Optimization"
+      ]
+    }
+  ]
 }
 </script>

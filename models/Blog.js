@@ -64,4 +64,8 @@ const blogSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+// Performance indexes — eliminates full collection scans on public routes
+blogSchema.index({ status: 1, createdAt: -1 });
+blogSchema.index({ status: 1, category: 1, createdAt: -1 });
+
 module.exports = mongoose.model('Blog', blogSchema);

@@ -3,9 +3,9 @@
     <main class="aks-blog-container">
 
         <div class="aks-page-header">
-            <h1><span class="highlight">
+            <h1 style="font-size: 3rem; font-weight: 800; font-family: 'Outfit', sans-serif;"><span class="highlight">
                     <%= categoryName %>
-                </span> for the Future</h1>
+                </span> Articles & Tutorials</h1>
             <p>Explore our latest insights, tutorials, and articles on <%= categoryName %>.</p>
         </div>
 
@@ -96,6 +96,29 @@
                             </a>
                             <% }) %>
                 </section>
+
+                <script type="application/ld+json">
+                {
+                  "@context": "https://schema.org",
+                  "@type": "CollectionPage",
+                  "name": "<%- categoryName %> Articles | CodeWithAKS",
+                  "url": "https://codewithaks.in/blog-categories/<%- categoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-') %>",
+                  "description": "Expert tutorials and articles on <%- categoryName %> by Ankit Singh.",
+                  "mainEntity": {
+                    "@type": "ItemList",
+                    "itemListElement": [
+                      <% blogs.forEach((b, i) => { %>
+                      {
+                        "@type": "ListItem",
+                        "position": <%= i + 1 %>,
+                        "url": "https://codewithaks.in/blog/<%= b.slug %>",
+                        "name": <%- JSON.stringify(b.title) %>
+                      }<%- i < blogs.length - 1 ? ',' : '' %>
+                      <% }) %>
+                    ]
+                  }
+                }
+                </script>
 
                 <% } else { %>
                     <div class="empty-state">

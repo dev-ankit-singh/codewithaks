@@ -3,7 +3,7 @@
     <main class="aks-blog-container">
 
         <div class="aks-page-header">
-            <h1>Latest <span class="highlight">Blog</span></h1>
+            <h1 style="font-size: 3rem; font-weight: 800; font-family: 'Outfit', sans-serif;">Tech Blog – <span class="highlight">Web Development, AI & SEO Articles by Ankit Singh</span></h1>
             <p>Insights, tutorials, and deep dives into modern web development, AI, and design.</p>
         </div>
 
@@ -14,8 +14,8 @@
                 <section class="aks-blog-hero">
                     <a href="/blog/<%= heroBlog.slug %>" class="hero-card">
                         <div class="hero-image-wrapper">
-                            <img src="<%= heroBlog.image ? '/uploads/' + heroBlog.image : '/images/placeholder.jpg' %>"
-                                alt="<%= heroBlog.title %>" class="hero-image" loading="lazy">
+                            <img src="<%= heroBlog.image ? '/uploads/' + heroBlog.image : '/images/ankit-singh.webp' %>"
+                                alt="<%= heroBlog.title %>" class="hero-image" loading="eager" fetchpriority="high">
                             <div class="hero-overlay"></div>
                             <% if (heroBlog.category) { %>
                                 <span class="category-badge">
@@ -94,6 +94,38 @@
                             </a>
                             <% }) %>
                 </section>
+
+                <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                <div class="pagination-wrapper text-center mt-5">
+                    <% if (page > 1) { %>
+                        <a href="/blog?page=<%= page - 1 %>" class="btn btn-outline-light me-2">&laquo; Prev</a>
+                    <% } %>
+                    <span class="text-white mx-3">Page <%= page %> of <%= totalPages %></span>
+                    <% if (page < totalPages) { %>
+                        <a href="/blog?page=<%= page + 1 %>" class="btn btn-outline-light ms-2">Next &raquo;</a>
+                    <% } %>
+                </div>
+                <% } %>
+
+                <script type="application/ld+json">
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Blog",
+                  "name": "CodeWithAKS Tech Blog",
+                  "url": "https://codewithaks.in/blog",
+                  "author": { "@type": "Person", "name": "Ankit Singh" },
+                  "blogPost": [
+                    <% blogs.forEach((b, i) => { %>
+                    {
+                      "@type": "BlogPosting",
+                      "headline": <%- JSON.stringify(b.title) %>,
+                      "url": "https://codewithaks.in/blog/<%= b.slug %>",
+                      "datePublished": "<%= new Date(b.createdAt).toISOString() %>"
+                    }<%- i < blogs.length - 1 ? ',' : '' %>
+                    <% }) %>
+                  ]
+                }
+                </script>
 
                 <% } else { %>
                     <div class="empty-state">

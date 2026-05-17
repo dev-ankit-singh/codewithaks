@@ -6,6 +6,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 process.on('uncaughtException', (err) => {
     console.error('Uncaught Exception:', err);
+    process.exit(1);
 });
 
 const express = require('express');
@@ -17,9 +18,11 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
+// const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo').default;
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const sanitizeHtml = require('sanitize-html');
@@ -39,7 +42,11 @@ const PORT = process.env.PORT || 3000;
 
 const MONGO_URI = process.env.MONGO_URI;
 // ─── MongoDB ──────────────────────────────────────────────────────────────────
-mongoose.connect(MONGO_URI)
+mongoose.connect(MONGO_URI, {
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000
+})
     .then(() => console.log("MongoDB Atlas connected"))
     .catch(err => console.error("MongoDB connection error:", err));
 
@@ -114,7 +121,7 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: MONGO_URI,
         collectionName: 'admin_sessions',
-        ttl: 2 * 60 * 60  // 2 hours
+        ttl: 2 * 60 * 60
     }),
     proxy: true,
     cookie: {
@@ -159,9 +166,7 @@ const storage = multer.diskStorage({
         const safeName = file.originalname
             .replace(/\s+/g, '-')
             .replace(/[^a-zA-Z0-9.\-_]/g, '');
-
-        const uniqueName = safeName.toLowerCase();
-
+        const uniqueName = Date.now() + '-' + safeName.toLowerCase();
         cb(null, uniqueName);
     }
 });
@@ -169,8 +174,8 @@ const upload = multer({
     storage,
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        const allowed = /jpeg|jpg|png|gif|webp/;
-        if (!allowed.test(file.mimetype)) return cb(new Error('Only images are allowed'));
+        const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedMimes.includes(file.mimetype)) return cb(new Error('Only image files are allowed'));
         cb(null, true);
     }
 });
@@ -241,12 +246,12 @@ app.use((req, res, next) => {
 
 // ─── Force HTTPS & Remove WWW ─────────────────────────────────────────────────
 app.use((req, res, next) => {
-    if (req.hostname === 'localhost') return next();
-    if (req.headers['x-forwarded-proto'] !== 'https') {
-        return res.redirect(301, 'https://' + req.headers.host + req.url);
-    }
-    if (req.headers.host && req.headers.host.startsWith('www.')) {
-        return res.redirect(301, 'https://' + req.headers.host.replace('www.', '') + req.url);
+    if (req.hostname === 'localhost' || req.hostname === '127.0.0.1') return next();
+    const isHttps = req.headers['x-forwarded-proto'] === 'https';
+    const isWww   = req.headers.host && req.headers.host.startsWith('www.');
+    if (!isHttps || isWww) {
+        const cleanHost = (req.headers.host || '').replace(/^www\./, '');
+        return res.redirect(301, 'https://' + cleanHost + req.url);
     }
     next();
 });
@@ -254,6 +259,20 @@ app.use((req, res, next) => {
 
 
 
+
+// ─── Compression (must be before static + routes) ───────────────────────────
+app.use(compression());
+
+// ─── X-Robots-Tag: noindex on all admin routes ───────────────────────────────
+app.use('/dhanrubi', (req, res, next) => {
+    res.set('X-Robots-Tag', 'noindex, nofollow');
+    next();
+});
+
+// ─── Health Check (for Render.com) ───────────────────────────────────────────
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // ─── Static Files ─────────────────────────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
@@ -263,17 +282,26 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get("/sitemap.xml", async (req, res) => {
     try {
         res.header('Content-Type', 'application/xml');
-        
-        const blogs = await Blog.find({ status: 'Published' }).sort({ createdAt: -1 });
-        const categories = await Blog.distinct('category', { status: 'Published' });
-        
+
+        let blogs = [];
+        let categories = [];
+        try {
+            blogs = await Blog.find({ status: 'Published' }).sort({ createdAt: -1 }).lean();
+            categories = await Blog.distinct('category', { status: 'Published' });
+        } catch (dbErr) {
+            console.error("DB Error in sitemap:", dbErr);
+            // Fallback to empty lists if DB fails
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
   <!-- Homepage -->
   <url>
     <loc>https://codewithaks.in/</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${blogs.length > 0 ? (blogs[0].updatedAt || blogs[0].createdAt).toISOString().split('T')[0] : today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -281,43 +309,59 @@ app.get("/sitemap.xml", async (req, res) => {
   <!-- Blog Main Page -->
   <url>
     <loc>https://codewithaks.in/blog</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${blogs.length > 0 ? (blogs[0].updatedAt || blogs[0].createdAt).toISOString().split('T')[0] : today}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://codewithaks.in/privacy-policy</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
   <!-- Blog Posts -->
 `;
-        
+
         blogs.forEach(blog => {
-            const lastmod = blog.updatedAt ? blog.updatedAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+            const lastmod = (blog.updatedAt || blog.createdAt).toISOString().split('T')[0];
             xml += `  <url>
     <loc>https://codewithaks.in/blog/${blog.slug}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.8</priority>`;
+            if (blog.image) {
+                xml += `
+    <image:image>
+      <image:loc>https://codewithaks.in/uploads/${blog.image}</image:loc>
+      <image:title><![CDATA[${blog.title}]]></image:title>
+    </image:image>`;
+            }
+            xml += `
   </url>
 `;
         });
-        
+
         xml += `
   <!-- Category Pages -->
 `;
-        
+
         categories.filter(Boolean).forEach(category => {
             const categorySlug = categoryToSlug(category);
             xml += `  <url>
     <loc>https://codewithaks.in/blog-categories/${categorySlug}</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 `;
         });
-        
+
         xml += `
 </urlset>`;
-        
+
         res.send(xml);
     } catch (err) {
         console.error("Sitemap generation error:", err);
@@ -332,9 +376,16 @@ app.get("/sitemap.xml", async (req, res) => {
 // Homepage
 app.get("/", async (req, res) => {
     try {
-        const blogs = await Blog.find({ status: 'Published' }).sort({ createdAt: -1 }).limit(6);
+        const [blogs, categories] = await Promise.all([
+            Blog.find({ status: 'Published' })
+                .select('title slug category image metaDescription createdAt')
+                .sort({ createdAt: -1 }).limit(6).lean(),
+            Blog.distinct('category', { status: 'Published' })
+        ]);
+        res.set('Cache-Control', 'public, max-age=600, stale-while-revalidate=120');
         res.render("index", {
             blogs,
+            categories,
             seo: {
                 title: "Ankit Singh – Full Stack Developer | codewithaks.in",
                 description: "Ankit Singh is a Full Stack Developer from India specializing in React.js, Node.js, MongoDB, Express.js, PostgreSQL, SEO optimization, and scalable web application development. Explore projects, blogs, and professional development services.",
@@ -351,15 +402,26 @@ app.get("/", async (req, res) => {
     }
 });
 
-// Blog Listing
+// Blog Listing (with limit + lean projection for performance)
 app.get("/blog", async (req, res) => {
     try {
-        const blogs = await Blog.find({ status: 'Published' }).sort({ createdAt: -1 });
+        const page  = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = 12;
+        const blogs = await Blog.find({ status: 'Published' })
+            .select('title slug category image metaDescription createdAt content')
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .lean();
+        const total = await Blog.countDocuments({ status: 'Published' });
+        res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
         res.render("blogs", {
             blogs,
+            page,
+            totalPages: Math.ceil(total / limit),
             seo: {
                 title: "Tech Blog – Web Dev, AI & SEO Tips | CodeWithAKS",
-                description: "Stay updated with latest trends in AI, Web Development, and SEO. Read expert technical guides and tutorials by Ankit Singh.",
+                description: "Read expert guides on Artificial Intelligence, Full Stack Development, React.js, Node.js, SEO and career growth by Ankit Singh – Full Stack Developer.",
                 keywords: "tech blog, web development tutorials, AI blog, SEO tips, Node.js tutorials, React guides",
                 image: "https://codewithaks.in/images/ankit-singh.webp",
                 url: "https://codewithaks.in/blog",
@@ -386,15 +448,32 @@ app.get("/blog-categories/:slug", async (req, res) => {
         const blogs = await Blog.find({
             status: 'Published',
             category: categoryName
-        }).sort({ createdAt: -1 });
+        })
+            .select('title slug category image metaDescription createdAt content')
+            .sort({ createdAt: -1 })
+            .lean();
 
+        // Unique descriptions per category for SEO
+        const categoryDescriptions = {
+            'Artificial Intelligence': `Explore in-depth articles on Artificial Intelligence, machine learning, and AI tools. Tutorials and insights by Ankit Singh, Full Stack Developer.`,
+            'SEO & Digital Marketing': `Learn practical SEO strategies, digital marketing tips, and search engine optimization techniques from Ankit Singh's expert blog.`,
+            'Full Stack Development': `Deep-dive tutorials on full stack web development using React, Node.js, MongoDB, and Express.js by Ankit Singh.`,
+            'React JS': `Master React.js with practical guides, hooks tutorials, and real-world project walkthroughs by Ankit Singh.`,
+            'Node.js & Backend': `Backend development guides covering Node.js, Express.js, REST APIs, and database design by Ankit Singh.`,
+            'Career & Jobs': `Career advice, job search tips, and professional growth strategies for developers and tech professionals.`
+        };
+        const catDesc = categoryDescriptions[categoryName] ||
+            `Read expert articles and tutorials on ${categoryName} by Ankit Singh, Full Stack Developer at CodeWithAKS.`;
+
+        res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
         res.render("category", {
             blogs,
             categoryName,
+            categories: allCategories,
             seo: {
-                title: `${categoryName} Blogs | CodeWithAKS`,
-                description: `Read the latest blogs and articles on ${categoryName} by Ankit Singh.`,
-                keywords: `${categoryName.toLowerCase()}, blogs, tutorials, codewithaks`,
+                title: `${categoryName} Articles & Tutorials | CodeWithAKS`,
+                description: catDesc,
+                keywords: `${categoryName.toLowerCase()}, tutorials, guides, codewithaks, Ankit Singh`,
                 image: "https://codewithaks.in/images/ankit-singh.webp",
                 url: `https://codewithaks.in/blog-categories/${req.params.slug}`,
                 type: "website",
@@ -437,6 +516,8 @@ app.get("/blog/:slug", async (req, res) => {
         const readingTime = Math.max(1, Math.ceil(wordCount / 200));
 
 
+        const categories = await Blog.distinct('category', { status: 'Published' });
+        res.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600');
         res.render('single_blog', {
             blog,
             faqData,
@@ -445,9 +526,11 @@ app.get("/blog/:slug", async (req, res) => {
             categoryBlogs,
             randomBlogs,
             readingTime,
+            categories,
             seo: {
                 title: blog.metaTitle || blog.title,
-                description: blog.metaDescription,
+                description: blog.metaDescription ||
+                    blog.content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().substring(0, 155),
                 keywords: blog.metaKeywords,
                 image: blog.image ? "https://codewithaks.in/uploads/" + blog.image : "https://codewithaks.in/images/ankit-singh.webp",
                 url: "https://codewithaks.in/blog/" + blog.slug,
@@ -819,7 +902,7 @@ app.post("/api/dhanrubi/blog/update/:id", requireAdmin, csrfProtection, upload.s
 });
 
 // POST: Toggle Publish Status
-app.post("/admin/blog/toggle-status/:id", requireAdmin, csrfProtection, async (req, res) => {
+app.post("/dhanrubi/blog/toggle-status/:id", requireAdmin, csrfProtection, async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
         if (!blog) return res.json({ success: false, message: "Blog not found" });
@@ -832,7 +915,7 @@ app.post("/admin/blog/toggle-status/:id", requireAdmin, csrfProtection, async (r
 });
 
 // DELETE: Delete blog
-app.delete("/admin/blog/:id", requireAdmin, csrfProtection, async (req, res) => {
+app.delete("/dhanrubi/blog/:id", requireAdmin, csrfProtection, async (req, res) => {
     try {
         const blog = await Blog.findByIdAndDelete(req.params.id);
         if (!blog) return res.json({ success: false, message: "Blog not found" });
@@ -845,7 +928,7 @@ app.delete("/admin/blog/:id", requireAdmin, csrfProtection, async (req, res) => 
 // ── Contact APIs ──────────────────────────────────────────────────────────────
 
 // DELETE: Delete contact message
-app.delete("/admin/contact/:id", requireAdmin, csrfProtection, async (req, res) => {
+app.delete("/dhanrubi/contact/:id", requireAdmin, csrfProtection, async (req, res) => {
     try {
         await Contact.findByIdAndDelete(req.params.id);
         res.json({ success: true, message: "Contact deleted." });
@@ -855,7 +938,7 @@ app.delete("/admin/contact/:id", requireAdmin, csrfProtection, async (req, res) 
 });
 
 // POST: Mark contact as read
-app.post("/admin/contact/read/:id", requireAdmin, csrfProtection, async (req, res) => {
+app.post("/dhanrubi/contact/read/:id", requireAdmin, csrfProtection, async (req, res) => {
     try {
         await Contact.findByIdAndUpdate(req.params.id, { isRead: true });
         res.json({ success: true });

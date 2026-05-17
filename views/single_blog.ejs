@@ -406,7 +406,7 @@ function removeStyle(content) {
                                     <div>
                                         <div style="color: var(--text-heading);">By Ankit Singh</div>
                                         <div style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">
-                                            <%= new Date(blog.createdAt).toDateString() %> • 5 MIN READ
+                                            <time datetime="<%= new Date(blog.createdAt).toISOString() %>"><%= new Date(blog.createdAt).toDateString() %></time> • <%= readingTime || 5 %> MIN READ
                                         </div>
                                     </div>
                                 </div>
@@ -562,10 +562,10 @@ function removeStyle(content) {
         <% faqData.forEach((item, index) => { %>
         {
           "@type": "Question",
-          "name": "<%- item.question.replace(/"/g, '\\"') %>",
+          "name": <%- JSON.stringify(item.question) %>,
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "<%- item.answer.replace(/"/g, '\\"') %>"
+            "text": <%- JSON.stringify(item.answer.replace(/<[^>]+>/g, '').trim()) %>
           }
         }<%- index < faqData.length - 1 ? ',' : '' %>
         <% }) %>
@@ -600,9 +600,9 @@ function removeStyle(content) {
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "<%- blog.title.replace(/"/g, '\\"') %>",
-      "description": "<%- (blog.metaDescription || '').replace(/"/g, '\\"') %>",
-      "image": "<%= blog.image ? `https://codewithaks.in/uploads/${blog.image}` : 'https://codewithaks.in/images/default.jpg' %>",
+      "headline": <%- JSON.stringify(blog.title) %>,
+      "description": <%- JSON.stringify(blog.metaDescription || blog.content.replace(/<[^>]+>/g, '').substring(0, 155)) %>,
+      "image": "<%= blog.image ? `https://codewithaks.in/uploads/${blog.image}` : 'https://codewithaks.in/images/ankit-singh.webp' %>",
       "author": {
         "@type": "Person",
         "name": "Ankit Singh",
@@ -610,14 +610,14 @@ function removeStyle(content) {
       },
       "publisher": {
         "@type": "Organization",
-        "name": "Ankit Singh",
+        "name": "CodeWithAKS",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://codewithaks.in/images/favicon.png"
+          "url": "https://codewithaks.in/android-chrome-512x512.png"
         }
       },
       "datePublished": "<%= new Date(blog.createdAt).toISOString() %>",
-      "dateModified": "<%= new Date(blog.updatedAt).toISOString() %>",
+      "dateModified": "<%= new Date(blog.updatedAt || blog.createdAt).toISOString() %>",
       "mainEntityOfPage": {
         "@type": "WebPage",
         "@id": "https://codewithaks.in/blog/<%= blog.slug %>"

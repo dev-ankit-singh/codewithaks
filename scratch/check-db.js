@@ -4,7 +4,8 @@ const Blog = require('../models/Blog');
 const Contact = require('../models/Contact');
 const Admin = require('../models/Admin');
 
-const MONGO_URI = "mongodb+srv://ankitsinghse72_db_user:codewithaks123@cluster0.gjitan9.mongodb.net/adminankit";
+require('dotenv').config({ path: '../.env' });
+const MONGO_URI = process.env.MONGO_URI;
 
 async function check() {
     await mongoose.connect(MONGO_URI);
