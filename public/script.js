@@ -1,12 +1,12 @@
-$(window).on('load', function() {
-    // Preloader Logic
-    setTimeout(function() {
-        $('#aks-preloader').css({
-            'opacity': '0',
-            'visibility': 'hidden'
-        });
-    }, 2000); // 2 seconds delay to show the animation
-});
+// $(window).on('load', function() {
+//     // Preloader Logic
+//     setTimeout(function() {
+//         $('#aks-preloader').css({
+//             'opacity': '0',
+//             'visibility': 'hidden'
+//         });
+//     }, 2000); 
+// });
 
 $(document).ready(function() {
 
@@ -171,18 +171,18 @@ $(document).ready(function() {
 
 
 
-  var typed = new Typed("#typing-text", {
-    strings: [
-      "FULL STACK DEVELOPER",
-      "FRONTEND DEVELOPER",
-      "BACKEND DEVELOPER",
-      "SEO DEVELOPER"
-    ],
-    typeSpeed: 60,     // typing speed
-    backSpeed: 40,     // deleting speed
-    backDelay: 1500,   // rukne ka time
-    loop: true         // repeat hota rahega
-  });
+//   var typed = new Typed("#typing-text", {
+//     strings: [
+//       "FULL STACK DEVELOPER",
+//       "FRONTEND DEVELOPER",
+//       "BACKEND DEVELOPER",
+//       "SEO DEVELOPER"
+//     ],
+//     typeSpeed: 60,     
+//     backSpeed: 40,     
+//     backDelay: 1500,   
+//     loop: true         
+//   });
 
 
 

@@ -29,7 +29,7 @@ function removeStyle(content) {
                             background: var(--bg-body);
                             color: var(--text-body);
                             line-height: 1.8;
-                            overflow: visible;
+                            overflow: hidden;
                         }
 
                         .single-blog h1,
@@ -212,6 +212,7 @@ function removeStyle(content) {
                         .single-blog .rich-content {
                             font-size: 18px;
                             color: #334155;
+                            padding: 12px;
                         }
 
                         .single-blog .rich-content h2,
@@ -599,7 +600,7 @@ function removeStyle(content) {
       "@type": "Article",
       "headline": <%- JSON.stringify(blog.title) %>,
       "description": <%- JSON.stringify(blog.metaDescription || blog.content.replace(/<[^>]+>/g, '').substring(0, 155)) %>,
-      "image": "<%= blog.image ? `https://codewithaks.in/uploads/${blog.image}` : 'https://codewithaks.in/images/ankit-singh.webp' %>",
+      "image": "<%- blog.image ? JSON.stringify(blog.image) : JSON.stringify('https://codewithaks.in/images/ankit-singh.webp') %>",
       "author": {
         "@type": "Person",
         "name": "Ankit Singh",
