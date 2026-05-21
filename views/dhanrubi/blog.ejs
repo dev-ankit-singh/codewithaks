@@ -526,7 +526,7 @@
         async function toggleStatus(id) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const res = await fetch(`/admin/blog/toggle-status/${id}`, {
+                const res = await fetch(`/dhanrubi/blog/toggle-status/${id}`, {
                     method: 'POST',
                     headers: { 'csrf-token': csrfToken, 'Content-Type': 'application/json' },
                     credentials: 'include'
@@ -539,7 +539,9 @@
                     const badge = document.getElementById(`badge-${id}`);
                     const btn = document.getElementById(`toggle-${id}`);
                     if (badge) { badge.textContent = newStatus; badge.className = `badge ${newStatus === 'Published' ? 'badge-pub' : 'badge-draft'}`; }
-                    if (btn) { btn.innerHTML = `<i class="fa-solid fa-toggle-on"></i> ${newStatus === 'Published' ? 'Draft' : 'Publish'}`; btn.className = `action-btn ${newStatus === 'Published' ? 'btn-toggle-draft' : 'btn-toggle-pub'}`; }
+                    if (btn) { 
+                        btn.innerHTML = `<i class="fa-solid fa-toggle-on"></i> ${newStatus === 'Published' ? 'Draft' : 'Publish'}`; 
+                        btn.className = `action-btn ${newStatus === 'Published' ? 'btn-toggle-draft' : 'btn-toggle-pub'} toggle-btn`; }
                     document.getElementById('countPublished').textContent = allBlogs.filter(b => b.status === 'Published').length;
                     document.getElementById('countDrafts').textContent = allBlogs.filter(b => b.status === 'Draft').length;
                 } else { alert('Error: ' + data.message); }
@@ -550,7 +552,7 @@
             if (!confirm('⚠️ Delete this blog permanently? This cannot be undone.')) return;
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const res = await fetch(`/admin/blog/${id}`, {
+                const res = await fetch(`/dhanrubi/blog/${id}`, {
                     method: 'DELETE',
                     headers: { 'csrf-token': csrfToken, 'Content-Type': 'application/json' },
                     credentials: 'include'

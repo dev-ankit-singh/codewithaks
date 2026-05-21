@@ -1,0 +1,9 @@
+
+
+Cloud name  = dpxgu0x6f
+API key  =  517378394581831
+API secret  = M4RSB_h108YBP2TrA-ctSO8SIEI
+
+
+
+API environment variable  =  CLOUDINARY_URL=cloudinary://517378394581831:M4RSB_h108YBP2TrA-ctSO8SIEI@dpxgu0x6f

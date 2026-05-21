@@ -367,7 +367,7 @@ function removeStyle(content) {
                         <!-- Premium Hero Section -->
                         <header class="hero-sectionsss">
                             <% if (blog.image) { %>
-                                <img src="/uploads/<%= blog.image %>" class="hero-bg" alt="<%= blog.title %>">
+                                <img src="<%= blog.image %>" class="hero-bg" alt="<%= blog.title %>" title="<%= blog.title %>" decoding="async" loading="lazy" width="1200" height="630">
                                 <% } %>
                                     <div class="hero-overlay"></div>
                                     <div class="container hero-content">
@@ -399,7 +399,7 @@ function removeStyle(content) {
                             <div class="post-meta-strip" id="content">
                                 <div class="meta-info">
                                     <img src="https://ui-avatars.com/api/?name=Ankit+Singh&background=3b82f6&color=fff"
-                                        alt="Ankit Singh">
+                                        alt="Ankit Singh" title="AnkitSingh">
                                     <div>
                                         <div style="color: var(--text-heading);">By Ankit Singh</div>
                                         <div style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">
@@ -468,8 +468,8 @@ function removeStyle(content) {
                                                 <% recentBlogs.forEach(rb=> { %>
                                                     <a href="/blog/<%= rb.slug %>" class="sing-blog-recent-item">
                                                         <% if (rb.image) { %>
-                                                            <img src="/uploads/<%= rb.image %>"
-                                                                class="sing-blog-recent-thumb" alt="<%= rb.title %>">
+                                                            <img src="<%= rb.image %>"
+                                                                class="sing-blog-recent-thumb" alt="<%= rb.title %>" title="<%= rb.title %>">
                                                             <% } else { %>
                                                                 <div class="sing-blog-recent-thumb"
                                                                     style="background: #f1f5f9;"></div>
@@ -523,8 +523,8 @@ function removeStyle(content) {
                                             <a href="/blog/<%= rb.slug %>"
                                                 class="sing-blog-card related-sing-blog-card h-100">
                                                 <% if (rb.image) { %>
-                                                    <img src="/uploads/<%= rb.image %>" class="sing-blog-related-img"
-                                                        alt="<%= rb.title %>">
+                                                    <img src="<%= rb.image %>" class="sing-blog-related-img"
+                                                        alt="<%= rb.title %>" title="<%= rb.title %>">
                                                     <% } else { %>
                                                         <div class="sing-blog-related-img" style="background: #f1f5f9;">
                                                         </div>

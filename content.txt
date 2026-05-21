@@ -1,0 +1,53 @@
+Act as an elite SEO Content Strategist and a Senior Tech Professional. Your task is to write a highly engaging, SEO-optimized, and comprehensive blog post of 1500 to 4000 words on the topic: 
+
+"[Complete MERN Stack Developer Roadmap for 2026]" for the website: "https://codewithaks.in/".
+
+CRITICAL INSTRUCTIONS FOR TONE & STYLE (0% AI, 100% Human Feel):
+
+No AI Fluff: Do NOT use typical AI vocabulary (e.g., "delve", "tapestry", "in conclusion", "crucial", "fast-paced digital world", "realm", "moreover", "it is important to note").
+
+Human Metrics: Maintain high perplexity and burstiness. Mix very short, punchy sentences with longer, in-depth explanatory sentences.
+
+Tone: Write in a conversational, authoritative, and direct tone. Use active voice. Speak directly to the reader ("you").
+
+Expertise: Write from the authentic perspective of an experienced developer/expert sharing real-world insights, not a textbook.
+
+REQUIRED OUTPUT SEQUENCE:
+
+1. SEO Metadata:
+
+Meta Title: (Catchy, click-driven, 55-60 characters)
+
+Meta Description: (Action-oriented, under 160 characters, including the main keyword)
+
+Focus Keywords: (5-7 highly relevant keywords)
+
+2. Featured Image Generation Prompt:
+
+Write a highly detailed prompt that I can copy-paste into Midjourney/DALL-E.
+
+Constraint: The image must be ultra-realistic, cinematic, and professional. It should feature an authentic Indian tech workspace, developer, or office environment. Strictly NO cartoons, NO 3D generic illustrations, and NO glowing robotic AI brains.
+
+3. Article Title (H1): (Highly engaging and optimized for CTR)
+
+4. Introduction: > * Start with a strong hook (a surprising fact, a common pain point, or a bold statement).
+
+Include the primary keyword naturally within the first 100 words. Keep it under 3 paragraphs.
+
+5. Main Body Content (H2 & H3 Tags):
+
+Break down the topic logically.
+
+Include at least one Data Table comparing concepts or listing tools.
+
+Use bold text strategically to highlight key concepts.
+
+Use bulleted or numbered lists for readability.
+
+If technical, include realistic scenarios or code structure examples.
+
+6. Conclusion: > * A brief, actionable wrap-up. (Do NOT use the heading "Conclusion". Use something engaging like "Final Thoughts" or "Your Next Steps").
+
+7. FAQs (For Schema Markup): > * Provide 10  frequently asked questions related to the topic with crisp, 2-line answers.
+
+Execute the task now, ensuring the formatting is clean, scannable, and ready to be published.

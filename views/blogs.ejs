@@ -14,8 +14,8 @@
                 <section class="aks-blog-hero">
                     <a href="/blog/<%= heroBlog.slug %>" class="hero-card">
                         <div class="hero-image-wrapper">
-                            <img src="<%= heroBlog.image ? '/uploads/' + heroBlog.image : '/images/ankit-singh.webp' %>"
-                                alt="<%= heroBlog.title %>" class="hero-image" loading="eager" fetchpriority="high">
+                            <img src="<%= heroBlog.image ? heroBlog.image : '/images/ankit-singh.webp' %>" alt="<%= heroBlog.title %>" 
+     title="<%= heroBlog.title %>" class="hero-image" loading="eager" fetchpriority="high">
                             <div class="hero-overlay"></div>
                             <% if (heroBlog.category) { %>
                                 <span class="category-badge">
@@ -58,8 +58,10 @@
                             %>
                             <a href="/blog/<%= blog.slug %>" class="blog-card">
                                 <div class="card-image-wrapper">
-                                    <img src="<%= blog.image ? '/uploads/' + blog.image : '/images/placeholder.jpg' %>"
-                                        alt="<%= blog.title %>" loading="lazy">
+                                   <img src="<%= blog.image ? blog.image : '/images/placeholder.jpg' %>"
+     alt="<%= blog.title %>" 
+     title="<%= blog.title %>" 
+     loading="lazy">
                                     <% if (blog.category) { %>
                                         <span class="card-badge">
                                             <%= blog.category %>

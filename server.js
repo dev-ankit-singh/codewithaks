@@ -154,30 +154,39 @@ const apiLimiter = rateLimit({
     legacyHeaders: false
 });
 
-const uploadPath = path.join(__dirname, 'public/uploads');
+//const uploadPath = path.join(__dirname, 'public/uploads');
 
-if (!fs.existsSync(uploadPath)) {
-    fs.mkdirSync(uploadPath, { recursive: true });
-}
-// ─── Multer (Image Upload) ─────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadPath),
-    filename: (req, file, cb) => {
-        const safeName = file.originalname
-            .replace(/\s+/g, '-')
-            .replace(/[^a-zA-Z0-9.\-_]/g, '');
-        const uniqueName = Date.now() + '-' + safeName.toLowerCase();
-        cb(null, uniqueName);
+// if (!fs.existsSync(uploadPath)) {
+//     fs.mkdirSync(uploadPath, { recursive: true });
+// }
+// ─── Cloudinary + Multer (Image Upload) ────────────────────────────────────────
+
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+
+// 1. Cloudinary को कॉन्फ़िगर करें (ये .env से Keys उठाएगा)
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// 2. नया Storage (यह diskStorage की जगह लेगा और सीधा क्लाउड पर भेजेगा)
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'aks-blog-images', // Cloudinary में तुम्हारा फोल्डर
+        allowed_formats: ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+        public_id: (req, file) => {
+            const safeName = file.originalname.split('.')[0].replace(/[^a-zA-Z0-9]/g, '-');
+            return Date.now() + '-' + safeName.toLowerCase();
+        }
     }
 });
+
 const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
-        const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        if (!allowedMimes.includes(file.mimetype)) return cb(new Error('Only image files are allowed'));
-        cb(null, true);
-    }
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB लिमिट
 });
 
 // ─── Sanitize Helper ──────────────────────────────────────────────────────────
@@ -777,6 +786,8 @@ app.post("/api/dhanrubi/blog/add", requireAdmin, csrfProtection, upload.single('
     if (!errors.isEmpty()) return res.json({ success: false, message: errors.array()[0].msg });
 
     try {
+        console.log("BODY:", req.body);
+        console.log("FILE:", req.file);
         let { title, slug, category, tags, status, content, metaTitle, metaKeywords, metaDescription, faqSchema, breadcrumbSchema, ratingValue, ratingCount } = req.body;
 
         // SLUG-LOCK MECHANISM: Respect provided slug, only auto-generate if missing
@@ -799,7 +810,8 @@ app.post("/api/dhanrubi/blog/add", requireAdmin, csrfProtection, upload.single('
             tags: tagsArray,
             status: status || 'Draft',
             content: cleanContent,
-            image: req.file ? req.file.filename : null,
+            // image: req.file ? req.file.filename : null,
+            image: req.file ? req.file.path : null,
             metaTitle: metaTitle || title,
             metaKeywords: metaKeywords || '',
             metaDescription: metaDescription || '',
@@ -891,7 +903,7 @@ app.post("/api/dhanrubi/blog/update/:id", requireAdmin, csrfProtection, upload.s
         blog.breadcrumbSchema = breadcrumbSchema || '[]';
         blog.ratingValue = parseFloat(ratingValue) || 0;
         blog.ratingCount = parseInt(ratingCount) || 0;
-        if (req.file) blog.image = req.file.filename;
+        if (req.file) blog.image = req.file.path;
 
         await blog.save();
         res.json({ success: true, message: "Blog updated successfully!" });

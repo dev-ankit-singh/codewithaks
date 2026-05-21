@@ -614,7 +614,7 @@
         async function markRead(id) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                await fetch(`/admin/contact/read/${id}`, {
+                await fetch(`/dhanrubi/contact/read/${id}`, {
                     method: 'POST',
                     headers: { 'csrf-token': csrfToken, 'Content-Type': 'application/json' },
                     credentials: 'same-origin'
@@ -622,11 +622,13 @@
             } catch (e) { console.error(e); }
         }
 
+
+
         async function deleteContact(id) {
             if (!confirm('Delete this contact message permanently?')) return;
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                const res = await fetch(`/admin/contact/${id}`, {
+                const res = await fetch(`/dhanrubi/contact/${id}`, {
                     method: 'DELETE',
                     headers: { 'csrf-token': csrfToken, 'Content-Type': 'application/json' },
                     credentials: 'same-origin'
