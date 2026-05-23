@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /dhanrubi/
+Disallow: /api/
 Sitemap: https://codewithaks.in/sitemap.xml

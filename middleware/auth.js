@@ -8,6 +8,10 @@ const requireAdmin = (req, res, next) => {
     if (req.session && req.session.adminLoggedIn === true) {
         return next();
     }
+
+        // Prevent indexing of redirect responses
+    res.set('X-Robots-Tag', 'noindex, nofollow');
+    
     // Not authenticated → redirect to hidden admin login
     return res.redirect('/dhanrubi/login');
 };

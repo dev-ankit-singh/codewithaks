@@ -1,69 +1,240 @@
 <%- include('partials/header') %>
 
-<main class="container my-5 py-5 aks-privacy-policy">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <h1 class="mb-4" style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2.5rem;">Privacy Policy</h1>
-            <p class="text-muted mb-5">Last updated: <%= new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></p>
+<style>
+    body {
+        background: #000 !important;
+        color: #d1d5db;
+        font-family: 'Outfit', sans-serif;
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">1. Information We Collect</h2>
-                <p>We only collect information that you voluntarily provide to us when you fill out contact forms, subscribe to our newsletter, or leave comments on our blog. This may include your name, email address, phone number, and any other information you choose to provide.</p>
-            </section>
+    .aks-privacy-policy {
+        background: #000;
+        min-height: 100vh;
+        padding-top: 120px;
+        padding-bottom: 80px;
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">2. How We Use Your Information</h2>
-                <p>We use the information we collect to:</p>
-                <ul>
-                    <li>Respond to your inquiries and support requests</li>
-                    <li>Send you newsletters, updates, and promotional materials (if you have opted in)</li>
-                    <li>Improve our website and services</li>
-                    <li>Monitor and analyze usage and trends to improve your experience</li>
-                </ul>
-            </section>
+    .privacy-wrapper {
+        background: linear-gradient(145deg, #0d0d0d, #111111);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 50px;
+        box-shadow: 0 0 40px rgba(255,255,255,0.03);
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">3. Cookies and Tracking Technologies</h2>
-                <p>We use cookies and similar tracking technologies to track activity on our website and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our service.</p>
-            </section>
+    .privacy-top-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.08);
+        color: #ffffff;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">4. Data Security</h2>
-                <p>The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your personal data, we cannot guarantee its absolute security.</p>
-            </section>
+    .privacy-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1.2;
+        margin-bottom: 15px;
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">5. Third-Party Services</h2>
-                <p>We may employ third party companies and individuals to facilitate our Service ("Service Providers"), to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used. These third parties have access to your Personal Data only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</p>
-            </section>
+    .privacy-subtitle {
+        color: #9ca3af;
+        font-size: 15px;
+        margin-bottom: 50px;
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">6. Links to Other Sites</h2>
-                <p>Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
-            </section>
+    .privacy-section {
+        margin-bottom: 45px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
 
-            <section class="mb-5">
-                <h2 class="h4 text-primary fw-bold mb-3">7. Contact Us</h2>
-                <p>If you have any questions about this Privacy Policy, please contact us at: <a href="mailto:ankitsingh.se72@gmail.com" class="text-primary text-decoration-none">ankitsingh.se72@gmail.com</a></p>
-            </section>
+    .privacy-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .privacy-section h2 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 18px;
+        position: relative;
+        padding-left: 18px;
+    }
+
+    .privacy-section h2::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        width: 5px;
+        height: 26px;
+        border-radius: 30px;
+        background: #ffffff;
+    }
+
+    .privacy-section p {
+        color: #b0b7c3;
+        line-height: 1.9;
+        font-size: 16px;
+        margin-bottom: 0;
+    }
+
+    .privacy-section ul {
+        padding-left: 20px;
+        margin-top: 20px;
+    }
+
+    .privacy-section ul li {
+        color: #c7ced8;
+        margin-bottom: 14px;
+        line-height: 1.8;
+        font-size: 15px;
+    }
+
+    .privacy-email {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+    .privacy-email:hover {
+        color: #9ca3af;
+    }
+
+    @media(max-width: 768px) {
+
+        .aks-privacy-policy {
+            padding-top: 100px;
+            padding-bottom: 50px;
+        }
+
+        .privacy-wrapper {
+            padding: 30px 22px;
+            border-radius: 18px;
+        }
+
+        .privacy-title {
+            font-size: 2.2rem;
+        }
+
+        .privacy-section h2 {
+            font-size: 1.25rem;
+        }
+
+        .privacy-section p,
+        .privacy-section ul li {
+            font-size: 15px;
+        }
+    }
+</style>
+
+<main class="aks-privacy-policy">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-9 mx-auto">
+
+                <div class="privacy-wrapper">
+
+                    <span class="privacy-top-badge">
+                        Privacy & Data Protection
+                    </span>
+
+                    <h1 class="privacy-title">
+                        Privacy Policy
+                    </h1>
+
+                    <p class="privacy-subtitle">
+                        Last updated:
+                        <%= new Date().toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                        }) %>
+                    </p>
+
+                    <section class="privacy-section">
+                        <h2>1. Information We Collect</h2>
+
+                        <p>
+                            We only collect information that you voluntarily provide when you contact us, submit a form, subscribe to updates, or interact with our website. This information may include your name, email address, phone number, and any other details you choose to share with us.
+                        </p>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>2. How We Use Your Information</h2>
+
+                        <p>
+                            The information collected from users is used to improve our services and provide a better experience on our platform.
+                        </p>
+
+                        <ul>
+                            <li>Respond to inquiries and customer support requests</li>
+                            <li>Send updates, newsletters, or promotional communications</li>
+                            <li>Improve website functionality and performance</li>
+                            <li>Analyze traffic, trends, and user interaction</li>
+                            <li>Maintain website security and prevent misuse</li>
+                        </ul>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>3. Cookies & Tracking Technologies</h2>
+
+                        <p>
+                            Our website may use cookies and similar technologies to improve user experience, analyze website traffic, and remember user preferences. You can disable cookies through your browser settings, but some features of the website may not function properly.
+                        </p>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>4. Data Security</h2>
+
+                        <p>
+                            We take reasonable and industry-standard measures to protect your personal information from unauthorized access, misuse, or disclosure. However, no online transmission or storage system can be guaranteed to be completely secure.
+                        </p>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>5. Third-Party Services</h2>
+
+                        <p>
+                            We may use trusted third-party services to help operate our website, analyze performance, or improve user experience. These service providers only access information necessary to perform their tasks and are expected to protect your data responsibly.
+                        </p>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>6. External Website Links</h2>
+
+                        <p>
+                            Our website may contain links to external websites that are not operated or controlled by us. We are not responsible for the privacy practices, content, or policies of any third-party websites. Users are encouraged to review the privacy policies of those websites separately.
+                        </p>
+                    </section>
+
+                    <section class="privacy-section">
+                        <h2>7. Contact Us</h2>
+
+                        <p>
+                            If you have any questions regarding this Privacy Policy or your personal information, you may contact us at:
+                            <br><br>
+
+                            <a href="mailto:ankitsingh.se72@gmail.com" class="privacy-email">
+                                ankitsingh.se72@gmail.com
+                            </a>
+                        </p>
+                    </section>
+
+                </div>
+
+            </div>
         </div>
     </div>
 </main>
-
-<style>
-    .aks-privacy-policy {
-        color: var(--text-body, #a0aec0);
-    }
-    .aks-privacy-policy h1, .aks-privacy-policy h2 {
-        color: var(--text-heading, #fff);
-    }
-    .aks-privacy-policy ul {
-        list-style-type: disc;
-        padding-left: 20px;
-    }
-    .aks-privacy-policy li {
-        margin-bottom: 10px;
-    }
-</style>
 
 <%- include('partials/footer') %>

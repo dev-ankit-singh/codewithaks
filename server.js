@@ -248,7 +248,8 @@ app.use((req, res, next) => {
         image: "https://codewithaks.in/images/ankit-singh.webp",
         url: "https://codewithaks.in" + req.originalUrl,
         type: "website",
-        robots: isBot ? "index, follow" : "index, follow, max-image-preview:large"
+        // robots: isBot ? "index, follow" : "index, follow, max-image-preview:large"
+        robots: "index, follow, max-image-preview:large"
     };
     next();
 });
@@ -284,7 +285,7 @@ app.get('/health', (req, res) => {
 });
 
 // ─── Static Files ─────────────────────────────────────────────────────────────
-app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Dynamic Sitemap Route ────────────────────────────────────────────────────
@@ -344,7 +345,7 @@ app.get("/sitemap.xml", async (req, res) => {
             if (blog.image) {
                 xml += `
     <image:image>
-      <image:loc>https://codewithaks.in/uploads/${blog.image}</image:loc>
+      <image:loc>${blog.image}</image:loc>
       <image:title><![CDATA[${blog.title}]]></image:title>
     </image:image>`;
             }
@@ -433,7 +434,8 @@ app.get("/blog", async (req, res) => {
                 description: "Read expert guides on Artificial Intelligence, Full Stack Development, React.js, Node.js, SEO and career growth by Ankit Singh – Full Stack Developer.",
                 keywords: "tech blog, web development tutorials, AI blog, SEO tips, Node.js tutorials, React guides",
                 image: "https://codewithaks.in/images/ankit-singh.webp",
-                url: "https://codewithaks.in/blog",
+                // url: "https://codewithaks.in/blog",
+                url: `https://codewithaks.in/blog${page > 1 ? '?page=' + page : ''}`,
                 type: "website",
                 robots: "index, follow, max-image-preview:large"
             }
@@ -537,19 +539,34 @@ app.get("/blog/:slug", async (req, res) => {
             readingTime,
             categories,
             seo: {
-                title: blog.metaTitle || blog.title,
-                description: blog.metaDescription ||
-                    blog.content.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().substring(0, 155),
-                keywords: blog.metaKeywords,
-                image: blog.image ? "https://codewithaks.in/uploads/" + blog.image : "https://codewithaks.in/images/ankit-singh.webp",
-                url: "https://codewithaks.in/blog/" + blog.slug,
-                type: "article",
-                robots: "index, follow, max-image-preview:large"
-            }
+    title: blog.metaTitle || blog.title,
+
+    description:
+        blog.metaDescription ||
+        blog.content
+            .replace(/<[^>]+>/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .substring(0, 155),
+
+    keywords: blog.metaKeywords,
+
+    image:
+        blog.image ||
+        "https://codewithaks.in/images/ankit-singh.webp",
+
+    url: "https://codewithaks.in/blog/" + blog.slug,
+
+    type: "article",
+
+    robots: "index, follow, max-image-preview:large"
+}
         });
     } catch (err) {
         console.error("SINGLE BLOG ERROR:", err);
-        res.status(500).send(err.message);
+        res.status(500).render('404', {
+        message: 'Some Technical Difficulties'
+});
     }
 });
 
@@ -964,9 +981,11 @@ app.post("/dhanrubi/contact/read/:id", requireAdmin, csrfProtection, async (req,
 
 // ─── 404 Catch-all ────────────────────────────────────────────────────────────
 app.use((req, res) => {
-    res.status(404).render('404', { message: 'Page not found' });
+    res
+        .status(404)
+        .set('X-Robots-Tag', 'noindex, nofollow')
+        .render('404', { message: 'Page not found' });
 });
-
 // ─── Start Server ─────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
