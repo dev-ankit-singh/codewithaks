@@ -29,7 +29,7 @@ function removeStyle(content) {
                             background: var(--bg-body);
                             color: var(--text-body);
                             line-height: 1.8;
-                            overflow: hidden;
+                            overflow: visible;
                         }
 
                         .single-blog h1,
@@ -431,7 +431,7 @@ function removeStyle(content) {
 
                                             <!-- FAQ Section -->
                                             <% if (typeof faqData !=='undefined' && faqData && faqData.length> 0) { %>
-                                                <div class="mt-5 pt-5 border-top">
+                                                <div class="mt-5 pt-5 border-top" style="padding-left: 12px;padding-right: 12px;">
                                                     <h3 class="mb-4">Common Questions</h3>
                                                     <div class="accordion accordion-flush" id="faqGroup">
                                                         <% faqData.forEach((item, idx)=> { %>
