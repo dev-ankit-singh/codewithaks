@@ -584,8 +584,8 @@ function removeStyle(content) {
     {
       "@type": "ListItem",
       "position": <%= index + 1 %>,
-      "name": "<%- item.name.replace(/"/g, '\\"') %>",
-      "item": "<%= item.url %>"
+      "name": <%- JSON.stringify(item.name) %>,
+      "item": <%- JSON.stringify(item.url) %>
     }<%- index < breadcrumbData.length - 1 ? ',' : '' %>
     <% }) %>
   ]
@@ -600,7 +600,7 @@ function removeStyle(content) {
       "@type": "Article",
       "headline": <%- JSON.stringify(blog.title) %>,
       "description": <%- JSON.stringify(blog.metaDescription || blog.content.replace(/<[^>]+>/g, '').substring(0, 155)) %>,
-      "image": "<%- blog.image ? JSON.stringify(blog.image) : JSON.stringify('https://codewithaks.in/images/ankit-singh.webp') %>",
+      "image": <%- blog.image ? JSON.stringify(blog.image) : JSON.stringify('https://codewithaks.in/images/ankit-singh.webp') %>,
       "author": {
         "@type": "Person",
         "name": "Ankit Singh",
