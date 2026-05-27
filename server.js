@@ -26,6 +26,7 @@ const compression = require('compression');
 const { body, validationResult } = require('express-validator');
 const multer = require('multer');
 const sanitizeHtml = require('sanitize-html');
+const validateEmail = require("deep-email-validator");
 
 // Models
 const Contact = require('./models/Contact');
@@ -584,19 +585,99 @@ app.get("/privacy-policy", (req, res) => {
     });
 });
 
+
+//email api check
+app.post('/api/check-email', async (req, res) => {
+
+    try {
+
+        const { email } = req.body;
+
+        if (!email) {
+
+            return res.status(400).json({
+                success: false,
+                message: "Email is required"
+            });
+        }
+
+        const emailValidation =
+            await validateEmail.validate(email);
+
+        if (!emailValidation.valid) {
+
+            return res.json({
+                success: false,
+                message:
+                    "Your email is not valid. Please enter a valid email."
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Valid Email"
+        });
+
+    } catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
+    }
+});
 // Contact API
 app.post('/api/contact', apiLimiter, async (req, res) => {
+
     try {
+
         const { name, email, phone, message } = req.body;
+
         if (!name || !email || !message) {
-            return res.status(400).json({ success: false, message: 'Name, email and message are required.' });
+
+            return res.status(400).json({
+                success: false,
+                message: 'Name, email and message are required.'
+            });
         }
-        const newContact = new Contact({ name, email, phone: phone || '', message });
+
+        // REAL EMAIL VALIDATION
+        const emailValidation =
+            await validateEmail.validate(email);
+
+        if (!emailValidation.valid) {
+
+            return res.status(400).json({
+                success: false,
+                message:
+                    'Your email is not valid. Please enter a valid email.'
+            });
+        }
+
+        const newContact = new Contact({
+            name,
+            email,
+            phone: phone || '',
+            message
+        });
+
         await newContact.save();
-        res.json({ success: true, message: "Message sent successfully!" });
+
+        res.json({
+            success: true,
+            message: "Message sent successfully!"
+        });
+
     } catch (error) {
+
         console.error(error);
-        res.status(500).json({ success: false, message: "Server Error" });
+
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 });
 
