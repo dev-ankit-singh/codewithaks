@@ -597,34 +597,56 @@ function removeStyle(content) {
 </script>
                                 <% } %>
 
-                                    <!-- Article & Review/Rating Schema -->
-                                    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": <%- JSON.stringify(blog.title) %>,
-      "description": <%- JSON.stringify(blog.metaDescription || blog.content.replace(/<[^>]+>/g, '').substring(0, 155)) %>,
-      "image": <%- blog.image ? JSON.stringify(blog.image) : JSON.stringify('https://codewithaks.in/images/ankit-singh.webp') %>,
-      "author": {
-        "@type": "Person",
-        "name": "Ankit Singh",
-        "url": "https://codewithaks.in"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "CodeWithAKS",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://codewithaks.in/android-chrome-512x512.png"
-        }
-      },
-      "datePublished": "<%= new Date(blog.createdAt).toISOString() %>",
-      "dateModified": "<%= new Date(blog.updatedAt || blog.createdAt).toISOString() %>",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://codewithaks.in/blog/<%= blog.slug %>"
-      }
+                                    <!-- Article Schema -->
+<%
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+
+  "headline": blog.title,
+
+  "description":
+    (blog.metaDescription ||
+    blog.content
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .substring(0, 155)),
+
+  "image":
+    blog.image ||
+    "https://codewithaks.in/images/ankit-singh.webp",
+
+  "author": {
+    "@type": "Person",
+    "name": "Ankit Singh",
+    "url": "https://codewithaks.in"
+  },
+
+  "publisher": {
+    "@type": "Organization",
+    "name": "CodeWithAKS",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://codewithaks.in/android-chrome-512x512.png"
     }
-    </script>
+  },
+
+  "datePublished": new Date(blog.createdAt).toISOString(),
+
+  "dateModified": new Date(
+    blog.updatedAt || blog.createdAt
+  ).toISOString(),
+
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `https://codewithaks.in/blog/${blog.slug}`
+  }
+};
+%>
+
+<script type="application/ld+json">
+<%- JSON.stringify(articleSchema) %>
+</script>
 
                                     <%- include('partials/footer') %>

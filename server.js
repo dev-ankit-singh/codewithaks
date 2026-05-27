@@ -38,7 +38,7 @@ const { requireAdmin } = require('./middleware/auth');
 
 const app = express();
 const isProd = process.env.NODE_ENV === 'production';
-app.set('trust proxy', isProd ? 1 : false);
+// app.set('trust proxy', isProd ? 1 : false);
 const PORT = process.env.PORT || 3000;
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -256,14 +256,45 @@ app.use((req, res, next) => {
 });
 
 // ─── Force HTTPS & Remove WWW ─────────────────────────────────────────────────
+// app.use((req, res, next) => {
+//     if (req.hostname === 'localhost' || req.hostname === '127.0.0.1') return next();
+//     const isHttps = req.headers['x-forwarded-proto'] === 'https';
+//     const isWww   = req.headers.host && req.headers.host.startsWith('www.');
+//     if (!isHttps || isWww) {
+//         const cleanHost = (req.headers.host || '').replace(/^www\./, '');
+//         return res.redirect(301, 'https://' + cleanHost + req.url);
+//     }
+//     next();
+// });
+app.enable('trust proxy');
+
 app.use((req, res, next) => {
-    if (req.hostname === 'localhost' || req.hostname === '127.0.0.1') return next();
-    const isHttps = req.headers['x-forwarded-proto'] === 'https';
-    const isWww   = req.headers.host && req.headers.host.startsWith('www.');
-    if (!isHttps || isWww) {
-        const cleanHost = (req.headers.host || '').replace(/^www\./, '');
-        return res.redirect(301, 'https://' + cleanHost + req.url);
+
+    if (
+        req.hostname === 'localhost' ||
+        req.hostname === '127.0.0.1'
+    ) {
+        return next();
     }
+
+    const host = req.headers.host || '';
+
+    // Remove WWW
+    if (host.startsWith('www.')) {
+        return res.redirect(
+            301,
+            'https://' + host.replace(/^www\./, '') + req.originalUrl
+        );
+    }
+
+    // Force HTTPS
+    if (!req.secure) {
+        return res.redirect(
+            301,
+            'https://' + host + req.originalUrl
+        );
+    }
+
     next();
 });
 
@@ -398,9 +429,9 @@ app.get("/", async (req, res) => {
             blogs,
             categories,
             seo: {
-                title: "Ankit Singh – Full Stack Developer | codewithaks.in",
-                description: "Ankit Singh is a Full Stack Developer from India specializing in React.js, Node.js, MongoDB, Express.js, PostgreSQL, SEO optimization, and scalable web application development. Explore projects, blogs, and professional development services.",
-                keywords: "Ankit Singh, Ankit Kumar Singh, Full Stack Developer, React Developer, MERN Stack Developer, Node.js Developer India, MongoDB Developer, PostgreSQL Developer, JavaScript Developer Portfolio",
+                title: "Ankit Singh | Full Stack Developer | React.js | Node.js",
+                description: "Ankit Singh is a Full Stack Developer skilled in React.js, Node.js, JavaScript, MongoDB, Express.js and modern web development. Explore projects, blogs and software engineering expertise.",
+                keywords: "Ankit Singh, Full Stack Developer, React.js Developer, Node.js Developer, MERN Stack Developer, JavaScript Developer, Software Engineer, MongoDB Developer, Express.js Developer",
                 image: "https://codewithaks.in/images/ankit-singh.webp",
                 url: "https://codewithaks.in/",
                 type: "website",
