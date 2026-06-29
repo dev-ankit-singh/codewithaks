@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Analytics – AKS Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;}
+        :root{--sidebar-w:240px;--bg:#0d0d14;--sidebar:#0f0f1a;--surface:#16162a;--surface2:#1a1a2e;--border:rgba(255,255,255,0.07);--primary:#4f46e5;--accent:#7c3aed;--text:#f1f1f1;--muted:#9ca3af;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;margin:0;}
+        .sidebar{width:var(--sidebar-w);background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100;}
+        .sidebar-brand{padding:0 20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+        .sidebar-brand .icon{width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;}
+        .sidebar-brand span{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;}
+        .sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto;}
+        .nav-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin:16px 0 6px;}
+        .nav-item a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;transition:all .15s;}
+        .nav-item a:hover,.nav-item a.active{background:rgba(79,70,229,.15);color:#a5b4fc;}
+        .nav-item a i{width:18px;text-align:center;}
+        .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border);}
+        .logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:#fca5a5;text-decoration:none;font-size:14px;font-weight:500;transition:background .15s;}
+        .logout-btn:hover{background:rgba(239,68,68,.1);}
+        .main-content{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-width:0;}
+        .topbar{background:rgba(13,13,20,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+        .topbar h2{font-size:18px;font-weight:600;font-family:'Outfit',sans-serif;margin:0;}
+        .page-body{padding:28px;}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+        .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s;}
+        .stat-card:hover{border-color:rgba(79,70,229,.4);}
+        .stat-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+        .stat-value{font-size:32px;font-weight:800;font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#a5b4fc,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .stat-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+        .stat-icon{float:right;font-size:20px;opacity:.3;margin-top:-38px;}
+        .card-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
+        .panel-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;margin:0 0 20px;display:flex;align-items:center;gap:8px;}
+        .panel-title i{color:#818cf8;}
+        .data-table{width:100%;border-collapse:collapse;font-size:13px;}
+        .data-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border);}
+        .data-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle;}
+        .data-table tr:hover td{background:rgba(79,70,229,.05);}
+        .url-cell{max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#a5b4fc;font-family:monospace;font-size:12px;}
+        .count-pill{background:rgba(79,70,229,.15);color:#a5b4fc;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:600;}
+        .filter-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+        .filter-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 14px;font-size:13px;min-width:180px;}
+        .filter-input:focus{outline:none;border-color:rgba(79,70,229,.5);}
+        .btn-filter{background:linear-gradient(135deg,var(--primary),var(--accent));border:none;color:#fff;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;}
+        .empty-state{text-align:center;padding:40px;color:var(--muted);}
+        .empty-state i{font-size:36px;opacity:.3;margin-bottom:10px;}
+        .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border);}
+        .tab-btn{background:none;border:none;color:var(--muted);padding:10px 16px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;}
+        .tab-btn.active{color:#a5b4fc;border-bottom-color:#6c63ff;}
+        .tab-btn:hover{color:#a5b4fc;}
+        @media(max-width:768px){
+            .sidebar{transform:translateX(-100%);}
+            .main-content{margin-left:0;}
+            .page-body{padding:16px;}
+            .data-table{display:block;overflow-x:auto;}
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <span>AKS Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Management</div>
+            <div class="nav-item"><a href="/dhanrubi/dashboard"><i class="fa-solid fa-gauge"></i> Dashboard</a></div>
+            <div class="nav-item"><a href="/dhanrubi/blogs"><i class="fa-solid fa-newspaper"></i> All Posts</a></div>
+            <div class="nav-item"><a href="/dhanrubi/add_blog"><i class="fa-solid fa-circle-plus"></i> New Post</a></div>
+            <div class="nav-item"><a href="/dhanrubi/contacts"><i class="fa-solid fa-envelope"></i> Contacts <% if (locals.unreadContactsCount > 0) { %><span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:auto;"><%= unreadContactsCount %></span><% } %></a></div>
+            <div class="nav-item"><a href="/dhanrubi/faqs"><i class="fa-solid fa-circle-question"></i> FAQs</a></div>
+            <div class="nav-item"><a href="/dhanrubi/analytics" class="active"><i class="fa-solid fa-chart-line"></i> Analytics</a></div>
+            <div class="nav-label">Account</div>
+            <div class="nav-item"><a href="/dhanrubi/change-password"><i class="fa-solid fa-key"></i> Change Password</a></div>
+            <div class="nav-label">Website</div>
+            <div class="nav-item"><a href="/" target="_blank"><i class="fa-solid fa-globe"></i> View Site</a></div>
+            <div class="nav-item"><a href="/faqs" target="_blank"><i class="fa-solid fa-circle-question"></i> View FAQs</a></div>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/dhanrubi/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+        </div>
+    </aside>
+
+    <div class="main-content">
+        <div class="topbar">
+            <h2><i class="fa-solid fa-chart-line" style="color:#818cf8;margin-right:8px;"></i>Page Analytics</h2>
+            <span style="font-size:13px;color:var(--muted);">Tracking FAQ pages</span>
+        </div>
+
+        <div class="page-body">
+            <!-- Summary Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Today's Visits</div>
+                    <div class="stat-value" id="statToday">–</div>
+                    <div class="stat-sub">Page views today</div>
+                    <i class="fa-solid fa-sun stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Yesterday</div>
+                    <div class="stat-value" id="statYesterday">–</div>
+                    <div class="stat-sub">Previous day views</div>
+                    <i class="fa-solid fa-clock-rotate-left stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Week</div>
+                    <div class="stat-value" id="statWeek">–</div>
+                    <div class="stat-sub">Last 7 days</div>
+                    <i class="fa-solid fa-calendar-week stat-icon"></i>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">All Time</div>
+                    <div class="stat-value" id="statTotal">–</div>
+                    <div class="stat-sub">Total page views</div>
+                    <i class="fa-solid fa-infinity stat-icon"></i>
+                </div>
+            </div>
+
+            <!-- Top Pages Summary -->
+            <div class="card-panel">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('summary', this)">Top Pages</button>
+                    <button class="tab-btn" onclick="switchTab('log', this)">Detailed Log</button>
+                </div>
+
+                <!-- Summary Tab -->
+                <div id="tab-summary">
+                    <div class="filter-row">
+                        <select class="filter-input" id="summaryPeriod" style="width:160px;" onchange="loadSummary()">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="week" selected>This Week</option>
+                            <option value="all">All Time</option>
+                        </select>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table" id="summaryTable">
+                            <thead><tr><th>#</th><th>Page URL</th><th>Views</th><th>Unique IPs</th></tr></thead>
+                            <tbody id="summaryTbody"><tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-chart-bar"></i><p>Loading...</p></div></td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Log Tab -->
+                <div id="tab-log" style="display:none;">
+                    <div class="filter-row">
+                        <input type="text" class="filter-input" id="filterUrl" placeholder="Filter by URL..." oninput="applyLogFilter()">
+                        <input type="date" class="filter-input" id="filterDateFrom" style="width:160px;">
+                        <input type="date" class="filter-input" id="filterDateTo" style="width:160px;">
+                        <button class="btn-filter" onclick="loadLog()"><i class="fa-solid fa-magnifying-glass"></i> Apply</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table class="data-table" id="logTable">
+                            <thead><tr><th>#</th><th>Page URL</th><th>IP Address</th><th>Date &amp; Time</th></tr></thead>
+                            <tbody id="logTbody"><tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-list"></i><p>Select dates and apply filter</p></div></td></tr></tbody>
+                        </table>
+                    </div>
+                    <div id="logPagination" style="display:flex;gap:8px;margin-top:16px;align-items:center;flex-wrap:wrap;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logData = [];
+        let logPage = 1;
+        const LOG_PER_PAGE = 50;
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-summary').style.display = tab === 'summary' ? 'block' : 'none';
+            document.getElementById('tab-log').style.display = tab === 'log' ? 'block' : 'none';
+        }
+
+        function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/dhanrubi/analytics/stats', { credentials: 'same-origin' });
+                const d = await res.json();
+                if (!d.success) return;
+                document.getElementById('statToday').textContent = d.today;
+                document.getElementById('statYesterday').textContent = d.yesterday;
+                document.getElementById('statWeek').textContent = d.week;
+                document.getElementById('statTotal').textContent = d.total;
+            } catch(e) {}
+        }
+
+        async function loadSummary() {
+            const period = document.getElementById('summaryPeriod').value;
+            try {
+                const res = await fetch('/api/dhanrubi/analytics/summary?period=' + period, { credentials: 'same-origin' });
+                const d = await res.json();
+                if (!d.success) return;
+                const tbody = document.getElementById('summaryTbody');
+                if (!d.data.length) {
+                    tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-chart-bar"></i><p>No data for this period</p></div></td></tr>';
+                    return;
+                }
+                tbody.innerHTML = d.data.map((row, i) => `
+                    <tr>
+                        <td style="color:var(--muted);font-size:12px;">${i+1}</td>
+                        <td><span class="url-cell">${escHtml(row._id)}</span></td>
+                        <td><span class="count-pill">${row.count}</span></td>
+                        <td style="color:var(--muted);font-size:12px;">${row.uniqueIps}</td>
+                    </tr>`).join('');
+            } catch(e) {}
+        }
+
+        async function loadLog() {
+            const from = document.getElementById('filterDateFrom').value;
+            const to = document.getElementById('filterDateTo').value;
+            const url_filter = document.getElementById('filterUrl').value;
+            let url = '/api/dhanrubi/analytics/log?';
+            if (from) url += 'from=' + from + '&';
+            if (to) url += 'to=' + to + '&';
+            if (url_filter) url += 'page=' + encodeURIComponent(url_filter);
+            try {
+                const res = await fetch(url, { credentials: 'same-origin' });
+                const d = await res.json();
+                if (!d.success) return;
+                logData = d.data;
+                logPage = 1;
+                renderLog();
+            } catch(e) {}
+        }
+
+        function applyLogFilter() {
+            const q = document.getElementById('filterUrl').value.toLowerCase();
+            const filtered = logData.filter(r => r.pageUrl.toLowerCase().includes(q));
+            renderLogPage(filtered, 1);
+        }
+
+        function renderLog() { renderLogPage(logData, logPage); }
+
+        function renderLogPage(data, page) {
+            const start = (page - 1) * LOG_PER_PAGE;
+            const slice = data.slice(start, start + LOG_PER_PAGE);
+            const tbody = document.getElementById('logTbody');
+            if (!slice.length) {
+                tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><i class="fa-solid fa-list"></i><p>No records found</p></div></td></tr>';
+                document.getElementById('logPagination').innerHTML = '';
+                return;
+            }
+            tbody.innerHTML = slice.map((r, i) => `
+                <tr>
+                    <td style="color:var(--muted);font-size:12px;">${start + i + 1}</td>
+                    <td><span class="url-cell" title="${escHtml(r.pageUrl)}">${escHtml(r.pageUrl)}</span></td>
+                    <td style="font-family:monospace;font-size:12px;color:var(--muted);">${escHtml(r.ipAddress)}</td>
+                    <td style="color:var(--muted);font-size:12px;">${new Date(r.visitedAt).toLocaleString('en-IN')}</td>
+                </tr>`).join('');
+            // Pagination
+            const totalPages = Math.ceil(data.length / LOG_PER_PAGE);
+            const pag = document.getElementById('logPagination');
+            if (totalPages <= 1) { pag.innerHTML = ''; return; }
+            pag.innerHTML = `<span style="font-size:12px;color:var(--muted);">Page ${page} of ${totalPages}</span>` +
+                (page > 1 ? `<button onclick="changePage(${page-1})" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;">← Prev</button>` : '') +
+                (page < totalPages ? `<button onclick="changePage(${page+1})" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;">Next →</button>` : '');
+        }
+
+        function changePage(p) { logPage = p; renderLog(); window.scrollTo({top:document.getElementById('logTable').offsetTop - 100, behavior:'smooth'}); }
+
+        // Init
+        loadStats();
+        loadSummary();
+    </script>
+</body>
+</html>

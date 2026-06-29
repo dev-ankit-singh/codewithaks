@@ -32,6 +32,8 @@ const validateEmail = require("deep-email-validator");
 const Contact = require('./models/Contact');
 const Blog = require('./models/Blog');
 const Admin = require('./models/Admin');
+const Review = require('./models/Review');
+const PageView = require('./models/PageView');
 
 // Middleware
 const { requireAdmin } = require('./middleware/auth');
@@ -1089,9 +1091,407 @@ app.post("/dhanrubi/contact/read/:id", requireAdmin, csrfProtection, async (req,
 });
 
 
+//faqs page live on here single faqs page 
+
+const Faq = require("./models/FAQs");
+
+app.get("/faqs", async (req, res) => {
+    try {
+
+        const faqs = await Faq.find({
+            status: "Published"
+        })
+        .sort({ createdAt: -1 })
+        .lean();
+
+        const groupedFaqs = {};
+
+        faqs.forEach(faq => {
+
+            if (!groupedFaqs[faq.category]) {
+                groupedFaqs[faq.category] = [];
+            }
+
+            groupedFaqs[faq.category].push(faq);
+
+        });
+
+        const categories = [
+            "AI & LLM SEO",
+            "Entity & Semantic SEO",
+            "Technical SEO",
+            "Content & EEAT",
+            "Schema & Structured Data SEO",
+            "Advanced SEO Concepts"
+        ];
+
+        // Ensure all categories are initialized in groupedFaqs so we don't get undefined errors
+        categories.forEach(cat => {
+            if (!groupedFaqs[cat]) {
+                groupedFaqs[cat] = [];
+            }
+        });
+
+        // Get unique list of all tags across all published FAQs
+        const allTags = [...new Set(faqs.flatMap(faq => faq.tags || []))].sort();
+
+        res.render("faqs", {
+            groupedFaqs,
+            categories,
+            allTags,
+            allFaqs: faqs,
+            seo: {
+                title: "FAQs | CodeWithAKS",
+                description: "Frequently Asked Questions",
+                keywords: "Faq",
+                image: "https://codewithaks.in/images/ankit-singh.webp",
+                url: "https://codewithaks.in/faqs",
+                type: "website",
+                robots: "index, follow"
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
+});
+
+// Dynamic single FAQ page route
+app.get("/faqs/:slug", async (req, res) => {
+    try {
+        const slug = req.params.slug;
+        const faq = await Faq.findOne({
+            slug: slug,
+            status: "Published"
+        }).lean();
+
+        if (!faq) {
+            return res
+                .status(404)
+                .set('X-Robots-Tag', 'noindex, nofollow')
+                .render('404', { message: 'FAQ not found' });
+        }
+
+        // Fetch all published FAQs to compute prev/next sequence
+        // We will sort them by the order in which they appear on the main page
+        const categoriesOrder = [
+            "AI & LLM SEO",
+            "Entity & Semantic SEO",
+            "Technical SEO",
+            "Content & EEAT",
+            "Schema & Structured Data SEO",
+            "Advanced SEO Concepts"
+        ];
+
+        const allFaqs = await Faq.find({ status: "Published" }).lean();
+        
+        // Sort all FAQs by their category order, then by their creation/ID order to match main page layout
+        allFaqs.sort((a, b) => {
+            const indexA = categoriesOrder.indexOf(a.category);
+            const indexB = categoriesOrder.indexOf(b.category);
+            if (indexA !== indexB) {
+                return indexA - indexB;
+            }
+            return a._id.toString().localeCompare(b._id.toString());
+        });
+
+        const currentIndex = allFaqs.findIndex(f => f.slug === slug);
+        const prevFaq = currentIndex > 0 ? allFaqs[currentIndex - 1] : null;
+        const nextFaq = currentIndex < allFaqs.length - 1 ? allFaqs[currentIndex + 1] : null;
+
+        // Fetch related FAQs in same category (exclude current)
+        const relatedFaqs = await Faq.find({
+            category: faq.category,
+            slug: { $ne: slug },
+            status: "Published"
+        })
+        .limit(5)
+        .lean();
+
+        // Plain text version of answer for meta description
+        const plainTextAnswer = faq.answer.replace(/<[^>]*>/g, '').trim().substring(0, 160) + '...';
+
+        let breadcrumbData = [];
+        try {
+            breadcrumbData = JSON.parse(faq.breadcrumbSchema || '[]');
+        } catch (e) {
+            breadcrumbData = [
+                { name: "Home", url: "https://codewithaks.in/" },
+                { name: "FAQs", url: "https://codewithaks.in/faqs/" },
+                { name: faq.question, url: `https://codewithaks.in/faqs/${faq.slug}` }
+            ];
+        }
+
+        res.render("faqs-details", {
+            faq,
+            prevFaq,
+            nextFaq,
+            relatedFaqs,
+            breadcrumbData,
+            seo: {
+                title: `${faq.question} | SEO Expert Hub`,
+                description: plainTextAnswer,
+                keywords: faq.tags ? faq.tags.join(", ") : "Faq",
+                image: "https://codewithaks.in/images/ankit-singh.webp",
+                url: `https://codewithaks.in/faqs/${faq.slug}`,
+                type: "article",
+                robots: "index, follow"
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
+});
+
+// ─── Page-View Tracking API (called from FAQ pages via fetch) ────────────────
+app.post('/api/track-pageview', async (req, res) => {
+    try {
+        const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
+        const page = (req.body.page || '').substring(0, 500);
+        if (!page) return res.json({ success: false });
+        await PageView.create({ pageUrl: page, ipAddress: ip, userAgent: (req.headers['user-agent'] || '').substring(0, 300) });
+        res.json({ success: true });
+    } catch(e) { res.json({ success: false }); }
+});
+
+// ─── FAQ Feedback (Helpful / Not Helpful) ────────────────────────────────────
+app.post('/api/faq-feedback', async (req, res) => {
+  try {
+    const { faqId, feedback, page } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(faqId)) {
+      return res.status(400).json({ success: false, message: 'Invalid FAQ ID' });
+    }
+
+    if (!['helpful', 'not_helpful'].includes(feedback)) {
+      return res.status(400).json({ success: false, message: 'Invalid feedback value' });
+    }
+
+    const ipAddress =
+      (req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || '').trim();
+
+    const userAgent = req.get('user-agent') || '';
+
+    const saved = await Review.findOneAndUpdate(
+      { faqId, ipAddress },
+      {
+        $set: {
+          feedback,
+          userAgent,
+          page: page || req.get('referer') || ''
+        }
+      },
+      {
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true
+      }
+    );
+
+    return res.json({
+      success: true,
+      message: 'Feedback saved',
+      data: saved
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: 'You have already submitted feedback for this FAQ.'
+      });
+    }
+
+    console.error('FAQ feedback error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
 
 
-// ─── 404 Catch-all ────────────────────────────────────────────────────────────
+// ─── Admin: FAQ Manager View ─────────────────────────────────────────────────
+app.get('/dhanrubi/faqs', requireAdmin, csrfProtection, (req, res) => {
+    res.render('dhanrubi/faqs', {
+        seo: { title: 'FAQs Manager', description: '', robots: 'noindex, nofollow' }
+    });
+});
+
+// ─── Admin: FAQ List View ────────────────────────────────────────────────────
+app.get('/dhanrubi/faqs/list', requireAdmin, csrfProtection, (req, res) => {
+    res.render('dhanrubi/faqs_list', {
+        seo: { title: 'Manage FAQs', description: '', robots: 'noindex, nofollow' }
+    });
+});
+
+// POST toggle FAQ status
+app.post("/dhanrubi/faq/toggle-status/:id", requireAdmin, csrfProtection, async (req, res) => {
+    try {
+        const faq = await Faq.findById(req.params.id);
+        if (!faq) return res.json({ success: false, message: "FAQ not found" });
+        faq.status = faq.status === "Published" ? "Draft" : "Published";
+        await faq.save();
+        res.json({ success: true, newStatus: faq.status });
+    } catch (err) {
+        res.json({ success: false, message: "Server Error" });
+    }
+});
+
+// ─── Admin: Analytics View ───────────────────────────────────────────────────
+app.get('/dhanrubi/analytics', requireAdmin, csrfProtection, (req, res) => {
+    res.render('dhanrubi/analytics', {
+        seo: { title: 'Analytics', description: '', robots: 'noindex, nofollow' }
+    });
+});
+
+// ─── Admin FAQ API ────────────────────────────────────────────────────────────
+// GET all FAQs
+app.get('/api/dhanrubi/faqs', requireAdmin, async (req, res) => {
+    try {
+        const q = {};
+        if (req.query.status) q.status = req.query.status;
+        if (req.query.search) q.question = { $regex: req.query.search, $options: 'i' };
+        const faqs = await Faq.find(q).sort({ createdAt: -1 }).lean();
+        res.json({ success: true, faqs });
+    } catch(e) { res.json({ success: false, message: 'Server error' }); }
+});
+
+// GET single FAQ by ID
+app.get('/api/dhanrubi/faq/:id', requireAdmin, async (req, res) => {
+    try {
+        const faq = await Faq.findById(req.params.id).lean();
+        if (!faq) return res.json({ success: false, message: 'FAQ not found' });
+        res.json({ success: true, faq });
+    } catch(e) { res.json({ success: false, message: 'Server error' }); }
+});
+
+// POST add FAQ
+app.post('/api/dhanrubi/faq/add', requireAdmin, csrfProtection, async (req, res) => {
+    try {
+        let { category, question, answer, status, slug, tags, breadcrumbSchema } = req.body;
+        if (!category || !question || !answer) {
+            return res.json({ success: false, message: 'Category, question, and answer are required.' });
+        }
+        if (!slug || !slug.trim()) {
+            slug = question.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+        // Ensure slug uniqueness
+        const existing = await Faq.findOne({ slug });
+        if (existing) slug = slug + '-' + Date.now().toString().slice(-5);
+        const tagsArr = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+        const faq = await Faq.create({ category, question, answer, status: status || 'Published', slug, tags: tagsArr, breadcrumbSchema: breadcrumbSchema || '[]' });
+        res.json({ success: true, message: 'FAQ created successfully!', faq });
+    } catch(e) {
+        console.error('FAQ add error:', e);
+        res.status(500).json({ success: false, message: 'Server error: ' + e.message });
+    }
+});
+
+// POST update FAQ
+app.post('/api/dhanrubi/faq/update/:id', requireAdmin, csrfProtection, async (req, res) => {
+    try {
+        const { category, question, answer, status, slug, tags, breadcrumbSchema } = req.body;
+        if (!category || !question || !answer) {
+            return res.json({ success: false, message: 'Category, question, and answer are required.' });
+        }
+        const faq = await Faq.findById(req.params.id);
+        if (!faq) return res.json({ success: false, message: 'FAQ not found' });
+        // Check slug uniqueness if changed
+        if (slug && slug !== faq.slug) {
+            const dup = await Faq.findOne({ slug, _id: { $ne: req.params.id } });
+            if (dup) return res.json({ success: false, message: 'Slug already in use.' });
+        }
+        faq.category = category;
+        faq.question = question;
+        faq.answer = answer;
+        faq.status = status || 'Published';
+        if (slug) faq.slug = slug;
+        faq.tags = tags ? tags.split(',').map(t => t.trim()).filter(Boolean) : faq.tags;
+        faq.breadcrumbSchema = breadcrumbSchema || '[]';
+        await faq.save();
+        res.json({ success: true, message: 'FAQ updated successfully!' });
+    } catch(e) {
+        console.error('FAQ update error:', e);
+        res.status(500).json({ success: false, message: 'Server error: ' + e.message });
+    }
+});
+
+// DELETE FAQ
+app.delete('/api/dhanrubi/faq/:id', requireAdmin, csrfProtection, async (req, res) => {
+    try {
+        const faq = await Faq.findByIdAndDelete(req.params.id);
+        if (!faq) return res.json({ success: false, message: 'FAQ not found' });
+        res.json({ success: true, message: 'FAQ deleted.' });
+    } catch(e) { res.json({ success: false, message: 'Server error' }); }
+});
+
+// ─── Admin Analytics APIs ─────────────────────────────────────────────────────
+app.get('/api/dhanrubi/analytics/stats', requireAdmin, async (req, res) => {
+    try {
+        const now = new Date();
+        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterdayStart = new Date(todayStart); yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+        const weekStart = new Date(todayStart); weekStart.setDate(weekStart.getDate() - 6);
+        const [today, yesterday, week, total] = await Promise.all([
+            PageView.countDocuments({ visitedAt: { $gte: todayStart } }),
+            PageView.countDocuments({ visitedAt: { $gte: yesterdayStart, $lt: todayStart } }),
+            PageView.countDocuments({ visitedAt: { $gte: weekStart } }),
+            PageView.countDocuments()
+        ]);
+        res.json({ success: true, today, yesterday, week, total });
+    } catch(e) { res.json({ success: false }); }
+});
+
+app.get('/api/dhanrubi/analytics/summary', requireAdmin, async (req, res) => {
+    try {
+        const period = req.query.period || 'week';
+        const now = new Date();
+        let from;
+        if (period === 'today') { from = new Date(now.getFullYear(), now.getMonth(), now.getDate()); }
+        else if (period === 'yesterday') {
+            from = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+            const to = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const data = await PageView.aggregate([
+                { $match: { visitedAt: { $gte: from, $lt: to } } },
+                { $group: { _id: '$pageUrl', count: { $sum: 1 }, uniqueIps: { $addToSet: '$ipAddress' } } },
+                { $project: { _id: 1, count: 1, uniqueIps: { $size: '$uniqueIps' } } },
+                { $sort: { count: -1 } }, { $limit: 50 }
+            ]);
+            return res.json({ success: true, data });
+        }
+        else if (period === 'week') { from = new Date(now); from.setDate(from.getDate() - 6); from.setHours(0,0,0,0); }
+        else { from = new Date(0); }
+        const data = await PageView.aggregate([
+            { $match: { visitedAt: { $gte: from } } },
+            { $group: { _id: '$pageUrl', count: { $sum: 1 }, uniqueIps: { $addToSet: '$ipAddress' } } },
+            { $project: { _id: 1, count: 1, uniqueIps: { $size: '$uniqueIps' } } },
+            { $sort: { count: -1 } }, { $limit: 50 }
+        ]);
+        res.json({ success: true, data });
+    } catch(e) { res.json({ success: false, data: [] }); }
+});
+
+app.get('/api/dhanrubi/analytics/log', requireAdmin, async (req, res) => {
+    try {
+        const match = {};
+        if (req.query.from || req.query.to) {
+            match.visitedAt = {};
+            if (req.query.from) match.visitedAt.$gte = new Date(req.query.from);
+            if (req.query.to) {
+                const to = new Date(req.query.to); to.setDate(to.getDate() + 1);
+                match.visitedAt.$lt = to;
+            }
+        }
+        if (req.query.page) match.pageUrl = { $regex: req.query.page, $options: 'i' };
+        const data = await PageView.find(match).sort({ visitedAt: -1 }).limit(500).lean();
+        res.json({ success: true, data });
+    } catch(e) { res.json({ success: false, data: [] }); }
+});
+
+
 app.use((req, res) => {
     res
         .status(404)

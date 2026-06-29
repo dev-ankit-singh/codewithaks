@@ -1,0 +1,818 @@
+<%- include('partials/header') %>
+<!-- PAGE-VIEW TRACKER -->
+<script>fetch('/api/track-pageview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:window.location.pathname}),credentials:'same-origin'}).catch(()=>{});</script>
+  <style>
+    :root {
+      --primary:   #0a0a0f;
+      --surface:   #111118;
+      --card:      #16161f;
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #6c63ff;
+      --accent2:   #00d4aa;
+      --text:      #e8e8f0;
+      --muted:     #8888a0;
+      --pill-bg:   rgba(108,99,255,0.12);
+      --pill-text: #a89fff;
+    }
+
+
+
+
+    .body-div {
+      background: var(--primary) !important;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.75;
+      min-height: 100vh;
+      
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: rgba(10,10,15,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar .navbar-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .topbar .navbar-brand span { color: var(--accent); }
+
+    /* ── HERO ── */
+    .faq-hero {
+      background: linear-gradient(135deg, #0d0d18 0%, #0a0a14 60%, #0f0f1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .faq-hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(108,99,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(108,99,255,0.2);
+      margin-bottom: 20px;
+    }
+    .faq-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .faq-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .faq-hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 32px;
+    }
+    .stat-row { display: flex; gap: 32px; flex-wrap: wrap; }
+    .stat-item { text-align: left; }
+    .stat-item .num {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .stat-item .lbl {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb-wrap {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .breadcrumb { margin: 0; }
+    .breadcrumb-item a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .breadcrumb-item a:hover { color: var(--accent); }
+    .breadcrumb-item.active {
+      color: var(--text);
+      font-size: 0.85rem;
+    }
+    .breadcrumb-item + .breadcrumb-item::before { color: var(--muted); }
+
+    /* ── FILTER TABS ── */
+    .filter-section { padding: 40px 0 0; }
+    .filter-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .filter-pill {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 7px 16px;
+      border-radius: 100px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .filter-pill:hover,
+    .filter-pill.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── SEARCH ── */
+    .search-wrap { position: relative; max-width: 480px; margin-bottom: 20px; }
+    .search-wrap input {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 16px 12px 44px;
+      width: 100%;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+    }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-wrap i {
+      position: absolute;
+      left: 15px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* ── CATEGORY SECTIONS ── */
+    .faq-section { padding: 50px 0 0; }
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .cat-icon.purple { background: rgba(108,99,255,0.15); color: var(--accent); }
+    .cat-icon.teal   { background: rgba(0,212,170,0.12); color: var(--accent2); }
+    .cat-icon.orange { background: rgba(255,160,60,0.12); color: #ffa03c; }
+    .cat-icon.pink   { background: rgba(255,100,160,0.12); color: #ff64a0; }
+    .cat-icon.blue   { background: rgba(60,140,255,0.12); color: #3c8cff; }
+    .cat-icon.green  { background: rgba(80,200,100,0.12); color: #50c864; }
+
+    .category-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+    .category-count {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-left: auto;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── ACCORDION ── */
+    .accordion { --bs-accordion-bg: transparent; }
+    .accordion-item {
+      background: var(--card);
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .accordion-item:hover { border-color: rgba(108,99,255,0.3) !important; }
+    .accordion-button {
+      background: var(--card) !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 18px 20px;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 12px !important;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      line-height: 1.5;
+    }
+    .accordion-button:not(.collapsed) {
+      color: #fff !important;
+      background: rgba(108,99,255,0.08) !important;
+      border-bottom: 1px solid var(--border) !important;
+      border-radius: 12px 12px 0 0 !important;
+    }
+    .accordion-button::after {
+      filter: invert(1);
+      opacity: 0.5;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .accordion-button:not(.collapsed)::after { opacity: 1; }
+
+    .q-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--pill-bg);
+      border: 1px solid rgba(108,99,255,0.2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+
+    .accordion-body {
+      background: rgba(108,99,255,0.04) !important;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.8;
+      padding: 18px 20px 20px;
+    }
+    .accordion-body p { margin: 0 0 10px; }
+    .accordion-body p:last-child { margin: 0; }
+
+    .faq-footer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .tag-pill {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--pill-text);
+      background: var(--pill-bg);
+      border: 1px solid rgba(108,99,255,0.15);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .read-more-link {
+      margin-left: auto;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.2s;
+    }
+    .read-more-link:hover { gap: 8px; color: var(--accent2); }
+
+    /* ── SIDEBAR ── */
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .sidebar-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-title i { color: var(--accent); }
+
+    .topic-chip {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin: 0 4px 6px 0;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .topic-chip:hover {
+      background: var(--pill-bg);
+      border-color: rgba(108,99,255,0.3);
+      color: var(--pill-text);
+    }
+
+    .popular-list { list-style: none; padding: 0; margin: 0; }
+    .popular-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .popular-list li:last-child { border: none; padding-bottom: 0; }
+    .popular-list a {
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .popular-list a:hover { color: var(--text); }
+    .popular-list a i { color: var(--accent); margin-top: 3px; flex-shrink: 0; }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      margin: 70px 0 0;
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .bottom-cta h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .bottom-cta p { color: var(--muted); max-width: 500px; margin: 0 auto 28px; }
+    .btn-glow {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 13px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s;
+      box-shadow: 0 0 30px rgba(108,99,255,0.3);
+    }
+    .btn-glow:hover {
+      background: #7c74ff;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(108,99,255,0.5);
+    }
+    .btn-outline-muted {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 13px 28px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s;
+    }
+    .btn-outline-muted:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 991px) {
+      .faq-hero { padding: 50px 0 40px; }
+      .stat-row { gap: 20px; }
+      div[style*="position:sticky"] { position: static !important; padding-top: 20px !important; }
+    }
+    @media (max-width: 767px) {
+      .faq-hero { padding: 44px 0 32px; }
+      .faq-hero h1 { font-size: 1.7rem; }
+      .faq-hero p { font-size: 0.95rem; }
+      .stat-row { gap: 16px; }
+      .stat-item .num { font-size: 1.3rem; }
+      .filter-section { padding: 24px 0 0; }
+      .filter-pills { gap: 6px; }
+      .filter-pill { font-size: 0.76rem; padding: 5px 12px; }
+      .search-wrap { max-width: 100%; }
+      .search-wrap input { font-size: 0.85rem; }
+      .accordion-button { font-size: 0.88rem; padding: 14px 16px; }
+      .accordion-body { padding: 14px 16px 16px; font-size: 0.86rem; }
+      .category-title { font-size: 1rem; }
+      .faq-footer-row { flex-wrap: wrap; gap: 8px; }
+      .read-more-link { margin-left: 0; }
+      .bottom-cta { margin: 48px 0 0; padding: 40px 0; }
+      .bottom-cta h2 { font-size: 1.4rem; }
+      .sidebar-card { margin-bottom: 16px; }
+    }
+    @media (max-width: 480px) {
+      .faq-hero { padding: 36px 0 28px; padding-top:74px; }
+      .faq-hero h1 { letter-spacing: -0.5px; }
+      .hero-badge { font-size: 0.72rem; }
+      .bottom-cta .d-flex { flex-direction: column; align-items: center; }
+      .btn-glow, .btn-outline-muted { width: 100%; justify-content: center; }
+      .cat-icon { width: 34px; height: 34px; font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<div class="body-div">
+
+<!-- ═══════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════ -->
+
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<header class="faq-hero" itemscope itemtype="https://schema.org/WebPageElement">
+  <div class="container">
+    <div class="hero-badge">
+      <i class="bi bi-patch-check-fill"></i>
+      Expert-Curated · Updated May 2026
+    </div>
+    <h1 itemprop="headline">
+      Frequently Asked Questions on<br>
+      <em>Modern SEO & AI Search</em>
+    </h1>
+    <p itemprop="description">
+      Authoritative answers covering SEO, AEO, GEO, LLM SEO, Entity SEO, EEAT, RAG SEO, Schema, Topical Authority and every emerging search discipline — structured for humans and AI alike.
+    </p>
+    <!-- <div class="stat-row">
+      <div class="stat-item">
+        <div class="num">120+</div>
+        <div class="lbl">Expert FAQs</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">30+</div>
+        <div class="lbl">SEO Disciplines</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">6</div>
+        <div class="lbl">Categories</div>
+      </div>
+    </div> -->
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════
+     BREADCRUMB
+═══════════════════════════════════════ -->
+<div class="breadcrumb-wrap" aria-label="Breadcrumb">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <li class="breadcrumb-item active" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name">FAQs</span>
+          <meta itemprop="position" content="2">
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════ -->
+<main class="container" id="main-content">
+  <div class="row g-4">
+
+    <!-- LEFT: FAQs -->
+    <div class="col-lg-8">
+
+      <!-- Filter & Search -->
+      <div class="filter-section">
+        <div class="filter-title">Browse by Category</div>
+        <div class="filter-pills" role="tablist" aria-label="FAQ Category Filter">
+          <div class="filter-pill active" data-cat="all" role="tab" tabindex="0" aria-selected="true">All Topics</div>
+          <% 
+          const categoryMetadata = {
+            "AI & LLM SEO": {
+              slug: "ai-seo",
+              color: "purple",
+              icon: "bi bi-robot",
+              accordionId: "accordionAI",
+              idPrefix: "ai"
+            },
+            "Entity & Semantic SEO": {
+              slug: "entity",
+              color: "teal",
+              icon: "bi bi-diagram-3",
+              accordionId: "accordionEntity",
+              idPrefix: "en"
+            },
+            "Technical SEO": {
+              slug: "technical",
+              color: "blue",
+              icon: "bi bi-gear-wide-connected",
+              accordionId: "accordionTech",
+              idPrefix: "tc"
+            },
+            "Content & EEAT": {
+              slug: "content",
+              color: "orange",
+              icon: "bi bi-pencil-square",
+              accordionId: "accordionContent",
+              idPrefix: "ct"
+            },
+            "Schema & Structured Data SEO": {
+              slug: "schema",
+              color: "pink",
+              icon: "bi bi-braces-asterisk",
+              accordionId: "accordionSchema",
+              idPrefix: "sc"
+            },
+            "Advanced SEO Concepts": {
+              slug: "advanced",
+              color: "green",
+              icon: "bi bi-graph-up-arrow",
+              accordionId: "accordionAdvanced",
+              idPrefix: "ad"
+            }
+          };
+
+          const pillLabels = {
+            "AI & LLM SEO": "AI & LLM SEO",
+            "Entity & Semantic SEO": "Entity & Semantic",
+            "Technical SEO": "Technical SEO",
+            "Content & EEAT": "Content & EEAT",
+            "Schema & Structured Data SEO": "Schema & Structured Data",
+            "Advanced SEO Concepts": "Advanced SEO"
+          };
+
+          categories.forEach(function(cat) { 
+               const meta = categoryMetadata[cat] || { slug: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') };
+               const label = pillLabels[cat] || cat;
+          %>
+            <div class="filter-pill" data-cat="<%= meta.slug %>" role="tab" tabindex="0"><%= label %></div>
+          <% }); %>
+        </div>
+        <div class="search-wrap mt-3">
+          <i class="bi bi-search"></i>
+          <input type="search" id="faqSearch" placeholder="Search FAQs… e.g. 'What is GEO?'" aria-label="Search FAQs" autocomplete="off">
+        </div>
+        <div id="searchCount" class="mb-1" style="font-size:0.82rem;color:var(--muted);min-height:20px;"></div>
+      </div>
+
+      <% categories.forEach(function(cat) { 
+           const meta = categoryMetadata[cat] || {
+             slug: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+             color: "purple",
+             icon: "bi bi-robot",
+             accordionId: "accordionTemp",
+             idPrefix: "faq"
+           };
+           const faqs = groupedFaqs[cat] || [];
+      %>
+        <!-- ───────────────────────────────────────
+             CATEGORY: <%= cat %>
+        ─────────────────────────────────────── -->
+        <section class="faq-section fade-up" data-category="<%= meta.slug %>" aria-labelledby="cat-<%= meta.slug %>" itemscope itemtype="https://schema.org/FAQPage">
+          <div class="category-header">
+            <div class="cat-icon <%= meta.color %>"><i class="<%= meta.icon %>"></i></div>
+            <h2 class="category-title" id="cat-<%= meta.slug %>"><%= cat %></h2>
+            <span class="category-count"><%= faqs.length %> Questions</span>
+          </div>
+          <div class="accordion" id="<%= meta.accordionId %>">
+
+            <% faqs.forEach(function(faq, index) { 
+                 const itemId = meta.idPrefix + (index + 1);
+                 
+                 // Handle short answer display for listing page specifically for LLM SEO
+                 let displayAnswer = faq.answer;
+                 if (faq.slug === 'llm-seo') {
+                   displayAnswer = '<p>LLM SEO is the discipline of optimizing your brand, content, and web presence so that Large Language Models — including GPT-4o, Gemini Ultra, Claude, and Llama — reference, cite, and recommend you in AI-generated responses. Unlike traditional SEO which targets crawlers, LLM SEO targets the training data, retrieval systems (RAG), and inference-time decision-making of AI models.</p><p>It matters because as of 2025, a growing share of all search queries are answered directly by AI systems that never send the user to a website. Brands absent from LLM training data and AI citations are effectively invisible to this audience.</p>';
+                 }
+            %>
+              <div class="accordion-item faq-item" data-cat="<%= meta.slug %>" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed faq-question" type="button" data-bs-toggle="collapse" data-bs-target="#<%= itemId %>" aria-expanded="false" aria-controls="<%= itemId %>" itemprop="name">
+                    <span class="q-num">Q<%= index + 1 %></span>
+                    <%= faq.question %>
+                  </button>
+                </h3>
+                <div id="<%= itemId %>" class="accordion-collapse collapse" data-bs-parent="#<%= meta.accordionId %>">
+                  <div class="accordion-body faq-answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                      <%- displayAnswer %>
+                    </div>
+                    <div class="faq-footer-row">
+                      <% if (faq.tags && faq.tags.length) { %>
+                        <% faq.tags.forEach(function(tag) { %>
+                          <span class="tag-pill"><%= tag %></span>
+                        <% }); %>
+                      <% } %>
+                      <a href="/faqs/<%= faq.slug %>" class="read-more-link">Full Answer <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+
+          </div><!-- /accordion -->
+        </section>
+      <% }); %>
+
+      <!-- Bottom CTA -->
+      <div class="bottom-cta">
+        <h2>Have a question not covered here?</h2>
+        <p>Submit your SEO question and get an expert answer tailored to your specific situation.</p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+          <a href="#" class="btn-glow"><i class="bi bi-send"></i> Ask an Expert</a>
+          <a href="#" class="btn-outline-muted"><i class="bi bi-book"></i> SEO Glossary</a>
+        </div>
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- RIGHT: SIDEBAR -->
+    <div class="col-lg-4">
+      <div style="position:sticky;top:80px;padding-top:40px;">
+
+        <!-- Quick Jump -->
+        <div class="sidebar-card">
+          <div class="sidebar-title"><i class="bi bi-lightning-fill"></i> Quick Jump</div>
+          <ul class="popular-list">
+            <% categories.forEach(function(cat) { 
+                 const meta = categoryMetadata[cat] || { slug: cat.toLowerCase().replace(/[^a-z0-9]+/g, '-') };
+                 const count = groupedFaqs[cat] ? groupedFaqs[cat].length : 0;
+                 let jumpLabel = cat;
+                 if (cat === "Schema & Structured Data SEO") jumpLabel = "Schema & Structured Data";
+                 if (cat === "Advanced SEO Concepts") jumpLabel = "Advanced SEO";
+            %>
+              <li><a href="#cat-<%= meta.slug %>"><i class="bi bi-arrow-right-short"></i> <%= jumpLabel %> (<%= count %> FAQs)</a></li>
+            <% }); %>
+          </ul>
+        </div>
+
+        <!-- Topics Cloud -->
+        <div class="sidebar-card">
+          <div class="sidebar-title"><i class="bi bi-tags-fill"></i> All SEO Topics</div>
+          <div>
+            <% allTags.forEach(function(tag) { %>
+              <a href="#" class="topic-chip"><%= tag %></a>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Popular FAQs -->
+        <div class="sidebar-card">
+          <div class="sidebar-title"><i class="bi bi-fire"></i> Most Read FAQs</div>
+          <ul class="popular-list">
+            <% 
+            const popularSlugs = ["llm-seo", "eeat", "geo", "rag-seo", "entity-seo", "kgseo"];
+            const popularFaqs = allFaqs.filter(f => popularSlugs.includes(f.slug));
+            popularFaqs.sort((a, b) => popularSlugs.indexOf(a.slug) - popularSlugs.indexOf(b.slug));
+            popularFaqs.forEach(function(faq) { 
+              let displayQuestion = faq.question;
+              if (faq.slug === "llm-seo") displayQuestion = "What is LLM SEO?";
+              if (faq.slug === "eeat") displayQuestion = "What is EEAT in SEO?";
+              if (faq.slug === "geo") displayQuestion = "What is GEO?";
+              if (faq.slug === "rag-seo") displayQuestion = "What is RAG SEO?";
+              if (faq.slug === "entity-seo") displayQuestion = "What is Entity SEO?";
+              if (faq.slug === "kgseo") displayQuestion = "What is KGSEO?";
+            %>
+              <li><a href="/faqs/<%= faq.slug %>"><i class="bi bi-chevron-right"></i> <%= displayQuestion %></a></li>
+            <% }); %>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</main>
+
+
+<script>
+  // ── FILTER PILLS
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.filter-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-selected','false'); });
+      this.classList.add('active');
+      this.setAttribute('aria-selected','true');
+      const cat = this.dataset.cat;
+      document.querySelectorAll('.faq-section').forEach(sec => {
+        sec.style.display = (cat === 'all' || sec.dataset.category === cat) ? '' : 'none';
+      });
+    });
+    pill.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' ') pill.click(); });
+  });
+
+  // ── SEARCH
+  const searchInput = document.getElementById('faqSearch');
+  const countEl = document.getElementById('searchCount');
+  searchInput.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('.faq-item').forEach(item => {
+      const q_text = item.querySelector('.faq-question').textContent.toLowerCase();
+      const a_text = item.querySelector('.faq-answer') ? item.querySelector('.faq-answer').textContent.toLowerCase() : '';
+      const match = !q || q_text.includes(q) || a_text.includes(q);
+      item.style.display = match ? '' : 'none';
+      if(match) visible++;
+    });
+    document.querySelectorAll('.faq-section').forEach(sec => {
+      const anyVisible = [...sec.querySelectorAll('.faq-item')].some(i => i.style.display !== 'none');
+      sec.style.display = anyVisible ? '' : 'none';
+    });
+    countEl.textContent = q ? `${visible} result${visible!==1?'s':''} for "${this.value.trim()}"` : '';
+    // reset filter pills
+    if(q) { document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active')); }
+  });
+
+  // ── FADE IN ON SCROLL
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</div>
+
+<%- include('partials/footer') %>

@@ -62,6 +62,8 @@
             <div class="nav-item"><a href="/dhanrubi/blogs"><i class="fa-solid fa-newspaper"></i> All Posts</a></div>
             <div class="nav-item"><a href="/dhanrubi/add_blog"><i class="fa-solid fa-circle-plus"></i> New Post</a></div>
             <div class="nav-item"><a href="/dhanrubi/contacts"><i class="fa-solid fa-envelope"></i> Contacts <% if (locals.unreadContactsCount > 0) { %><span style="background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:auto;"><%= unreadContactsCount %></span><% } %></a></div>
+            <div class="nav-item"><a href="/dhanrubi/faqs"><i class="fa-solid fa-circle-question"></i> FAQs</a></div>
+            <div class="nav-item"><a href="/dhanrubi/analytics"><i class="fa-solid fa-chart-line"></i> Analytics</a></div>
             <div class="nav-label">Account</div>
             <div class="nav-item"><a href="/dhanrubi/change-password"><i class="fa-solid fa-key"></i> Change Password</a></div>
             <div class="nav-label">Website</div>
@@ -121,6 +123,14 @@
                 <a href="/blog" target="_blank" class="action-card">
                     <div class="action-icon" style="background:rgba(14,165,233,.1);color:#38bdf8;"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
                     <div class="action-info"><h4>View Live Blog</h4><p>See how it looks publicly</p></div>
+                </a>
+                <a href="/dhanrubi/faqs" class="action-card">
+                    <div class="action-icon" style="background:rgba(139,92,246,.15);color:#c4b5fd;"><i class="fa-solid fa-circle-question"></i></div>
+                    <div class="action-info"><h4>Manage FAQs</h4><p>Add, edit &amp; delete FAQs</p></div>
+                </a>
+                <a href="/dhanrubi/analytics" class="action-card">
+                    <div class="action-icon" style="background:rgba(16,185,129,.1);color:#6ee7b7;"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="action-info"><h4>Page Analytics</h4><p>View FAQ page visits</p></div>
                 </a>
             </div>
         </div>

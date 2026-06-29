@@ -1,0 +1,1104 @@
+<%- include('partials/header') %>
+<!-- PAGE-VIEW TRACKER -->
+<script>fetch('/api/track-pageview',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({page:window.location.pathname}),credentials:'same-origin'}).catch(()=>{});</script>
+  <style>
+    :root {
+      --primary:   #0a0a0f;
+      --surface:   #111118;
+      --card:      #16161f;
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #6c63ff;
+      --accent2:   #00d4aa;
+      --text:      #e8e8f0;
+      --muted:     #8888a0;
+      --pill-bg:   rgba(108,99,255,0.12);
+      --pill-text: #a89fff;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--primary);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: rgba(10,10,15,0.95);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar .navbar-brand {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .topbar .navbar-brand span { color: var(--accent); }
+
+    /* ── BREADCRUMB ── */
+    .breadcrumb-wrap {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .breadcrumb { margin: 0; }
+    .breadcrumb-item a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+    .breadcrumb-item a:hover { color: var(--accent); }
+    .breadcrumb-item.active { color: var(--text); font-size: 0.85rem; }
+    .breadcrumb-item + .breadcrumb-item::before { color: var(--muted); }
+
+    /* ── QUESTION HEADER ── */
+    .question-hero {
+      padding: 60px 0 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .category-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(108,99,255,0.2);
+      text-decoration: none;
+      margin-bottom: 18px;
+      transition: all 0.2s;
+    }
+    .category-label:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .question-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.7rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: -0.8px;
+      margin-bottom: 20px;
+    }
+    .question-headline em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Meta row */
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .author-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 8px 14px 8px 8px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .author-chip:hover { border-color: rgba(108,99,255,0.4); }
+    .author-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .author-info { line-height: 1.2; }
+    .author-name { font-size: 0.82rem; font-weight: 500; color: var(--text); }
+    .author-role { font-size: 0.72rem; color: var(--muted); }
+
+    .meta-stat {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .meta-stat i { color: var(--accent); font-size: 0.9rem; }
+
+    /* Quick answer box */
+    .quick-answer-box {
+      background: rgba(108,99,255,0.07);
+      border: 1px solid rgba(108,99,255,0.25);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 0;
+    }
+    .qa-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .answer-lead {
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1.7;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    /* ── ANSWER BODY ── */
+    .answer-section { padding: 50px 0 0; }
+    .answer-content h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 36px 0 14px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .answer-content h2:first-child { margin-top: 0; border-top: none; }
+    .answer-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 24px 0 10px;
+    }
+    .answer-content p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.85;
+      margin-bottom: 16px;
+    }
+    .answer-content strong { color: var(--text); font-weight: 500; }
+
+    /* Callout boxes */
+    .callout {
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 20px 0;
+      font-size: 0.92rem;
+    }
+    .callout-info {
+      background: rgba(60,140,255,0.07);
+      border-left: 3px solid #3c8cff;
+    }
+    .callout-info strong { color: #3c8cff; }
+    .callout-success {
+      background: rgba(0,212,170,0.07);
+      border-left: 3px solid var(--accent2);
+    }
+    .callout-success strong { color: var(--accent2); }
+    .callout-warning {
+      background: rgba(255,160,60,0.07);
+      border-left: 3px solid #ffa03c;
+    }
+    .callout-warning strong { color: #ffa03c; }
+
+    /* Tactics grid */
+    .tactic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .tactic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      transition: border-color 0.2s;
+    }
+    .tactic-card:hover { border-color: rgba(108,99,255,0.3); }
+    .tactic-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--pill-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .tactic-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 6px;
+    }
+    .tactic-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 0.88rem;
+    }
+    .compare-table th {
+      background: var(--card);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .compare-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      vertical-align: top;
+    }
+    .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .compare-table .label-col { color: var(--text); font-weight: 500; }
+    .badge-yes { color: var(--accent2); font-size: 0.8rem; }
+    .badge-no { color: #ff5c5c; font-size: 0.8rem; }
+
+    /* ── RELATED FAQ ACCORDION ── */
+    .related-section { padding: 50px 0 0; }
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .accordion { --bs-accordion-bg: transparent; }
+    .accordion-item {
+      background: var(--card);
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .accordion-item:hover { border-color: rgba(108,99,255,0.3) !important; }
+    .accordion-button {
+      background: var(--card) !important;
+      color: var(--text) !important;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.93rem;
+      font-weight: 500;
+      padding: 17px 20px;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 12px !important;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .accordion-button:not(.collapsed) {
+      color: #fff !important;
+      background: rgba(108,99,255,0.08) !important;
+      border-bottom: 1px solid var(--border) !important;
+      border-radius: 12px 12px 0 0 !important;
+    }
+    .accordion-button::after { filter: invert(1); opacity: 0.5; }
+    .accordion-button:not(.collapsed)::after { opacity: 1; }
+    .q-badge {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--pill-bg);
+      border: 1px solid rgba(108,99,255,0.2);
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .accordion-body {
+      background: rgba(108,99,255,0.04) !important;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      padding: 18px 20px 20px;
+    }
+    .accordion-body p { margin-bottom: 10px; }
+    .accordion-body p:last-child { margin: 0; }
+
+    .ans-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .tag-pill {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--pill-text);
+      background: var(--pill-bg);
+      border: 1px solid rgba(108,99,255,0.15);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+    .sidebar-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .sidebar-title i { color: var(--accent); }
+
+    /* TOC */
+    .toc-list { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+    .toc-list li { counter-increment: toc; }
+    .toc-list a {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.83rem;
+      transition: color 0.2s;
+    }
+    .toc-list li:last-child a { border: none; }
+    .toc-list a:hover { color: var(--accent); }
+    .toc-list a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent);
+      opacity: 0.7;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Related links */
+    .related-links { list-style: none; padding: 0; margin: 0; }
+    .related-links li { padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .related-links li:last-child { border: none; padding-bottom: 0; }
+    .related-links a {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.83rem;
+      transition: color 0.2s;
+    }
+    .related-links a:hover { color: var(--text); }
+    .related-links a i { color: var(--accent); flex-shrink: 0; margin-top: 3px; }
+
+    /* Vote / Helpful */
+    .vote-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      text-align: center;
+    }
+    .vote-box p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .vote-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.82rem;
+      padding: 8px 18px;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .vote-btn:hover { background: var(--pill-bg); border-color: var(--accent); color: var(--pill-text); }
+    .vote-btn.voted { background: rgba(0,212,170,0.1); border-color: var(--accent2); color: var(--accent2); }
+    .vote-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .vote-btn.green-active { background: rgba(16, 185, 129, 0.2) !important; border-color: #10b981 !important; color: #34d399 !important; }
+    .vote-btn.red-active { background: rgba(239, 68, 68, 0.2) !important; border-color: #ef4444 !important; color: #fca5a5 !important; }
+    .vote-thankyou { display:none; color: var(--accent2); font-size:0.9rem; margin-top:10px; font-weight:500; }
+    /* FAQ Hero (same as faqs.ejs) */
+    .faq-hero {
+      background: linear-gradient(135deg, #0d0d18 0%, #0a0a14 60%, #0f0f1a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 0 60px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 60px;
+    }
+    .faq-hero::before {
+      content: '';
+      position: absolute;
+      top: -120px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(108,99,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      border: 1px solid rgba(108,99,255,0.2);
+      margin-bottom: 20px;
+    }
+    .faq-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+    .faq-hero h1 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .faq-hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 580px;
+      margin-bottom: 0;
+    }
+    /* Responsive */
+    @media (max-width: 991px) {
+      .faq-hero { padding: 60px 0 40px; }
+      .question-hero { padding: 40px 0 28px; }
+      .answer-section { padding: 30px 0 0; }
+      .related-section { padding: 30px 0 0; }
+      .bottom-nav-section { padding: 36px 0; margin-top: 40px; }
+      .sidebar-card { margin-bottom: 16px; }
+      div[style*="position:sticky"] { position:static !important; padding-top: 0 !important; }
+    }
+    @media (max-width: 767px) {
+      body { font-size: 15px; }
+      .faq-hero { padding: 48px 0 32px; }
+      .faq-hero h1 { font-size: 1.5rem; }
+      .question-headline { font-size: clamp(1.3rem, 5vw, 1.9rem) !important; }
+      .meta-row { gap: 10px; }
+      .meta-stat { font-size: 0.75rem; }
+      .quick-answer-box { padding: 16px 18px; }
+      .answer-lead { font-size: 0.95rem; }
+      .answer-content h2 { font-size: 1.1rem; }
+      .answer-content h3 { font-size: 0.95rem; }
+      .tactic-grid { grid-template-columns: 1fr; }
+      .compare-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .bottom-nav-section { padding: 28px 0; margin-top: 32px; }
+      .nav-card { padding: 16px; }
+      .nav-card-title { font-size: 0.88rem; }
+      .accordion-button { font-size: 0.88rem; padding: 14px 16px; }
+      .accordion-body { padding: 14px 16px 16px; font-size: 0.86rem; }
+      .vote-box { padding: 16px; }
+      .vote-btn { font-size: 0.78rem; padding: 7px 14px; }
+    }
+    @media (max-width: 480px) {
+      .faq-hero { padding: 40px 0 28px; margin-top: 56px; }
+      .meta-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .author-chip { width: 100%; }
+      .ans-footer { flex-wrap: wrap; }
+      .vote-box .d-flex { flex-direction: column; align-items: center; }
+      .vote-btn { width: 180px; justify-content: center; }
+    }
+
+    /* Tags  */
+    .topic-chip {
+      display: inline-block;
+      font-size: 0.73rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 8px;
+      margin: 0 4px 6px 0;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .topic-chip:hover { background: var(--pill-bg); border-color: rgba(108,99,255,0.3); color: var(--pill-text); }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav-section {
+      padding: 50px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+    .nav-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .nav-card:hover { border-color: rgba(108,99,255,0.35); transform: translateY(-2px); }
+    .nav-dir {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+    .nav-card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+
+  </style>
+
+<%
+const categoryMetadata = {
+  "AI & LLM SEO": {
+    slug: "ai-seo",
+    color: "purple",
+    icon: "bi bi-robot",
+    idPrefix: "ai"
+  },
+  "Entity & Semantic SEO": {
+    slug: "entity",
+    color: "teal",
+    icon: "bi bi-diagram-3",
+    idPrefix: "en"
+  },
+  "Technical SEO": {
+    slug: "technical",
+    color: "blue",
+    icon: "bi bi-gear-wide-connected",
+    idPrefix: "tc"
+  },
+  "Content & EEAT": {
+    slug: "content",
+    color: "orange",
+    icon: "bi bi-pencil-square",
+    idPrefix: "ct"
+  },
+  "Schema & Structured Data SEO": {
+    slug: "schema",
+    color: "pink",
+    icon: "bi bi-braces-asterisk",
+    idPrefix: "sc"
+  },
+  "Advanced SEO Concepts": {
+    slug: "advanced",
+    color: "green",
+    icon: "bi bi-graph-up-arrow",
+    idPrefix: "ad"
+  }
+};
+
+const meta = categoryMetadata[faq.category] || { slug: faq.category.toLowerCase().replace(/[^a-z0-9]+/g, '-'), color: "purple", icon: "bi bi-robot" };
+
+const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const d = new Date(faq.updatedAt);
+const formattedDate = months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+
+let quickAnswer = faq.answer;
+if (faq.slug === 'llm-seo') {
+  quickAnswer = '<strong>LLM SEO</strong> is the discipline of optimizing your brand, content, and web presence so that Large Language Models — including GPT-4o, Gemini, Claude, and Llama — reference, cite, and recommend you in AI-generated responses. It combines entity optimization, topical authority, structured data, citation building, and RAG-ready content to ensure AI systems recognize your brand as the authoritative source on your topic.';
+} else {
+  // If the answer starts with <p>... extract first paragraph text or first 200 chars
+  const pMatch = faq.answer.match(/<p>([\s\S]*?)<\/p>/);
+  if (pMatch) {
+    quickAnswer = pMatch[1];
+  }
+}
+%>
+
+<!-- FAQ HERO -->
+<header class="faq-hero" itemscope itemtype="https://schema.org/WebPageElement">
+  <div class="container">
+    <div class="hero-badge">
+      <i class="bi bi-patch-check-fill"></i>
+      <% const catMeta2 = categoryMetadata[faq.category] || {color:'purple',icon:'bi bi-robot'}; %>
+      <%= faq.category %> · Expert Answer
+    </div>
+    <h1>
+      <em> <%= faq.question %></em>
+    </h1>
+    <p>Expert-curated, in-depth answer for every search discipline — structured for humans and AI alike.</p>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-wrap" aria-label="Breadcrumb">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/" itemprop="item"><span itemprop="name">Home</span></a>
+          <meta itemprop="position" content="1">
+        </li>
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="/faqs" itemprop="item"><span itemprop="name">FAQs</span></a>
+          <meta itemprop="position" content="2">
+        </li>
+        <li class="breadcrumb-item active" id="bc-current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name"><%= faq.question %></span>
+          <meta itemprop="position" content="3">
+        </li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="container" id="main-content">
+  <div class="row g-4">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-lg-9">
+
+      <!-- Question Hero -->
+      <header class="question-hero" itemscope itemtype="https://schema.org/Question">
+        <!-- Author + Meta -->
+        <div class="meta-row">
+          <a href="#" class="author-chip" rel="author" aria-label="View author profile">
+            <div class="author-avatar">SE</div>
+            <div class="author-info">
+              <div class="author-name">SEO Expert</div>
+              <div class="author-role">Senior SEO Strategist</div>
+            </div>
+          </a>
+          <div class="meta-stat"><i class="bi bi-calendar3"></i> Updated <%= formattedDate %></div>
+          <%
+          const wordCount = faq.answer.split(/\s+/).length;
+          const readTime = Math.max(1, Math.round(wordCount / 200));
+          %>
+          <div class="meta-stat"><i class="bi bi-clock"></i> <%= readTime %> min read</div>
+          <div class="meta-stat"><i class="bi bi-eye"></i> 12,840 views</div>
+        </div>
+
+        <!-- Quick Answer -->
+        <div class="quick-answer-box" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <div class="qa-label"><i class="bi bi-lightning-fill me-1"></i>Quick Answer</div>
+          <p class="answer-lead" itemprop="text" id="quick-ans">
+            <%- quickAnswer %>
+          </p>
+        </div>
+      </header>
+
+      <!-- Full Answer Body -->
+      <article class="answer-section" id="answer-body">
+        <div class="answer-content">
+          <% if (faq.slug !== 'llm-seo') { %>
+            <h2 id="what-is"><%= faq.question %></h2>
+          <% } %>
+          <%- faq.answer %>
+        </div><!-- /answer-content -->
+
+        <!-- Tags -->
+        <div class="mt-4 mb-2">
+          <% if (faq.tags && faq.tags.length) { %>
+            <% faq.tags.forEach(function(tag) { %>
+              <a href="/faqs" class="topic-chip"><%= tag %></a>
+            <% }); %>
+          <% } %>
+        </div>
+
+        <!-- Helpful vote -->
+        <div class="vote-box mt-4" id="voteBox">
+          <p>Was this answer helpful?</p>
+          <script>
+            async function submitVote(type) {
+
+    console.log("Vote Clicked:", type);
+
+    alert(type);
+
+}
+          </script>
+          <div class="d-flex gap-2 justify-content-center" id="voteButtons">
+           <button class="vote-btn" id="voteYes">
+    <i class="bi bi-hand-thumbs-up"></i> Yes, Helpful
+</button>
+
+<button class="vote-btn" id="voteNo">
+    <i class="bi bi-hand-thumbs-down"></i> Not Really
+</button>
+          </div>
+          <div class="vote-thankyou" id="voteThankyou"></div>
+        </div>
+
+      </article>
+
+      <!-- ── RELATED FAQs ACCORDION ── -->
+      <% if (relatedFaqs && relatedFaqs.length) { %>
+        <section class="related-section" aria-labelledby="related-heading">
+          <div class="section-label">Continue Learning</div>
+          <h2 class="section-title" id="related-heading">Related Questions</h2>
+
+          <div class="accordion" id="accordionRelated">
+            <% relatedFaqs.forEach(function(rFaq, index) { 
+                 const rId = "r" + (index + 1);
+                 let rAnswer = rFaq.answer;
+                 if (rFaq.slug === 'llm-seo') {
+                   rAnswer = '<p>LLM SEO is the discipline of optimizing your brand, content, and web presence so that Large Language Models — GPT-4o, Gemini, Claude, Llama — reference, cite, and recommend you in AI-generated responses.</p>';
+                 }
+            %>
+              <div class="accordion-item" itemscope itemtype="https://schema.org/Question">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed faq-question d-flex align-items-start gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#<%= rId %>" aria-expanded="false" itemprop="name">
+                    <span class="q-badge">Related</span>
+                    <%= rFaq.question %>
+                  </button>
+                </h3>
+                <div id="<%= rId %>" class="accordion-collapse collapse" data-bs-parent="#accordionRelated">
+                  <div class="accordion-body" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+                    <div itemprop="text">
+                      <%- rAnswer %>
+                    </div>
+                    <div class="ans-footer">
+                      <% if (rFaq.tags && rFaq.tags.length) { %>
+                        <% rFaq.tags.slice(0, 2).forEach(function(tag) { %>
+                          <span class="tag-pill"><%= tag %></span>
+                        <% }); %>
+                      <% } %>
+                      <a href="/faqs/<%= rFaq.slug %>" style="margin-left:auto;font-size:0.82rem;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:4px;">Full Answer <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </section>
+      <% } %>
+
+      <!-- Prev / Next navigation -->
+      <div class="bottom-nav-section">
+        <div class="row g-3">
+          <% if (prevFaq) { %>
+            <div class="col-sm-6">
+              <a href="/faqs/<%= prevFaq.slug %>" class="nav-card">
+                <div class="nav-dir"><i class="bi bi-arrow-left"></i> Previous</div>
+                <p class="nav-card-title"><%= prevFaq.question %></p>
+              </a>
+            </div>
+          <% } %>
+          <% if (nextFaq) { %>
+            <div class="col-sm-6" style="<%= !prevFaq ? 'margin-left: auto;' : '' %>">
+              <a href="/faqs/<%= nextFaq.slug %>" class="nav-card">
+                <div class="nav-dir">Next <i class="bi bi-arrow-right"></i></div>
+                <p class="nav-card-title"><%= nextFaq.question %></p>
+              </a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-3">
+      <div style="position:sticky;top:80px;padding-top:44px;">
+
+        <!-- Table of Contents -->
+        <% if (faq.slug === 'llm-seo') { %>
+          <div class="sidebar-card">
+            <div class="sidebar-title"><i class="bi bi-list-ul"></i> Contents</div>
+            <ul class="toc-list" aria-label="Table of contents">
+              <li><a href="#what-is">What is LLM SEO?</a></li>
+              <li><a href="#why-different">How it differs from Traditional SEO</a></li>
+              <li><a href="#core-tactics">Core LLM SEO Tactics</a></li>
+              <li><a href="#rag-connection">LLM SEO and RAG Systems</a></li>
+              <li><a href="#measurement">How to Measure LLM SEO</a></li>
+              <li><a href="#related-disciplines">Related Disciplines</a></li>
+            </ul>
+          </div>
+        <% } %>
+
+        <!-- Answer Info -->
+        <div class="sidebar-card">
+          <div class="sidebar-title"><i class="bi bi-info-circle-fill"></i> Answer Details</div>
+          <table style="width:100%;font-size:0.82rem;border-collapse:collapse;">
+            <tr>
+              <td style="color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);">Category</td>
+              <td style="color:var(--text);text-align:right;padding:8px 0;border-bottom:1px solid var(--border);"><%= faq.category %></td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);">Difficulty</td>
+              <td style="text-align:right;padding:8px 0;border-bottom:1px solid var(--border);">
+                <%
+                let difficulty = "Beginner";
+                let diffColor = "#00d4aa";
+                if (meta.slug === "ai-seo" || meta.slug === "advanced") {
+                  difficulty = "Advanced";
+                  diffColor = "#ff6384";
+                } else if (meta.slug === "entity" || meta.slug === "technical" || meta.slug === "schema") {
+                  difficulty = "Intermediate";
+                  diffColor = "#4da6ff";
+                }
+                %>
+                <span style="color:<%= diffColor %>;font-size:0.8rem;">● <%= difficulty %></span>
+              </td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border);">Updated</td>
+              <td style="color:var(--text);text-align:right;padding:8px 0;border-bottom:1px solid var(--border);"><%= formattedDate %></td>
+            </tr>
+            <tr>
+              <td style="color:var(--muted);padding:8px 0;">Read time</td>
+              <td style="color:var(--text);text-align:right;padding:8px 0;"><%= readTime %> <%= readTime === 1 ? 'minute' : 'minutes' %></td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- Related FAQs Links -->
+        <% if (relatedFaqs && relatedFaqs.length) { %>
+          <div class="sidebar-card">
+            <div class="sidebar-title"><i class="bi bi-link-45deg"></i> Related FAQs</div>
+            <ul class="related-links">
+              <% relatedFaqs.forEach(function(rFaq) { %>
+                <li><a href="/faqs/<%= rFaq.slug %>"><i class="bi bi-chevron-right"></i> <%= rFaq.question %></a></li>
+              <% }); %>
+            </ul>
+          </div>
+        <% } %>
+
+        <!-- All FAQs CTA -->
+        <div class="sidebar-card text-center">
+          <div class="sidebar-title justify-content-center"><i class="bi bi-collection-fill"></i> Browse All FAQs</div>
+          <p style="color:var(--muted);font-size:0.82rem;margin-bottom:16px;">Explore 120+ expert answers across all SEO disciplines.</p>
+          <a href="/faqs" style="background:var(--accent);color:#fff;padding:10px 24px;border-radius:10px;font-size:0.88rem;font-weight:600;text-decoration:none;display:block;text-align:center;transition:background 0.2s;">View All FAQs →</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</main>
+
+
+<!-- Bootstrap JS -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
+
+<!-- Breadcrumb Schema (aligned with blog system) -->
+<% if (typeof breadcrumbData !== 'undefined' && breadcrumbData && breadcrumbData.length > 0) { %>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    <% breadcrumbData.forEach((item, index) => { %>
+    {
+      "@type": "ListItem",
+      "position": <%= index + 1 %>,
+      "name": <%- JSON.stringify(item.name) %>,
+      "item": <%- JSON.stringify(item.url) %>
+    }<%- index < breadcrumbData.length - 1 ? ',' : '' %>
+    <% }) %>
+  ]
+}
+</script>
+<% } %>
+
+<script>
+  // Vote handler — AJAX with one-per-session guard
+  const FAQ_ID = '<%= faq._id %>';
+  const VOTED_KEY = 'voted_faq_' + FAQ_ID;
+
+  (function initVote() {
+    if (sessionStorage.getItem(VOTED_KEY)) {
+      const ty = document.getElementById('voteThankyou');
+      if (ty) {
+        ty.style.display = 'block';
+        ty.textContent = '✅ Thanks for your feedback!';
+      }
+    }
+  })();
+
+  async function submitVote(type) {
+    const ty = document.getElementById('voteThankyou');
+    if (sessionStorage.getItem(VOTED_KEY)) {
+      ty.style.display = 'block';
+      ty.textContent = 'ℹ️ You have already submitted feedback for this FAQ.';
+      return;
+    }
+
+    const yes = document.getElementById('voteYes');
+    const no  = document.getElementById('voteNo');
+    yes.disabled = true; no.disabled = true;
+
+    // Green / Red button animation immediately
+    if (type === 'helpful') {
+      yes.classList.add('green-active');
+    } else {
+      no.classList.add('red-active');
+    }
+
+    try {
+      const res = await fetch('/api/faq-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ faqId: FAQ_ID, feedback: type }),
+        credentials: 'same-origin'
+      });
+      const data = await res.json();
+      ty.style.display = 'block';
+      if (data.success) {
+        sessionStorage.setItem(VOTED_KEY, type);
+        ty.textContent = '✅ Thanks for your feedback!';
+      } else {
+        ty.textContent = 'ℹ️ ' + (data.message || 'You have already submitted feedback for this FAQ.');
+        sessionStorage.setItem(VOTED_KEY, 'voted');
+      }
+    } catch (e) {
+      ty.style.display = 'block';
+      ty.textContent = '⚠️ Could not submit feedback. Please try again.';
+    }
+
+    // After 5 seconds both buttons return to normal default style
+    setTimeout(() => {
+      yes.classList.remove('green-active');
+      no.classList.remove('red-active');
+      yes.disabled = false; no.disabled = false;
+    }, 5000);
+  }
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('.toc-list a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+
+
+  async function submitVote(type) {
+  const ty = document.getElementById('voteThankyou');
+  const yes = document.getElementById('voteYes');
+  const no  = document.getElementById('voteNo');
+
+  if (sessionStorage.getItem(VOTED_KEY)) {
+    ty.style.display = 'block';
+    ty.textContent = 'ℹ️ You have already submitted feedback for this FAQ.';
+    return;
+  }
+
+  yes.disabled = true;
+  no.disabled = true;
+
+  if (type === 'helpful') {
+    yes.classList.add('green-active');
+    no.classList.remove('red-active');
+  } else {
+    no.classList.add('red-active');
+    yes.classList.remove('green-active');
+  }
+
+  try {
+    const res = await fetch('/api/faq-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        faqId: FAQ_ID,
+        feedback: type,
+        page: window.location.pathname
+      }),
+      credentials: 'same-origin'
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      sessionStorage.setItem(VOTED_KEY, type);
+      ty.style.display = 'block';
+      ty.textContent = '✅ Thanks for your feedback!';
+    } else {
+      ty.style.display = 'block';
+      ty.textContent = '⚠️ ' + (data.message || 'Could not save feedback.');
+    }
+  } catch (err) {
+    ty.style.display = 'block';
+    ty.textContent = '⚠️ Could not submit feedback. Please try again.';
+    yes.disabled = false;
+    no.disabled = false;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const yesBtn = document.getElementById('voteYes');
+    const noBtn = document.getElementById('voteNo');
+
+    yesBtn.addEventListener('click', () => {
+        submitVote('helpful');
+    });
+
+    noBtn.addEventListener('click', () => {
+        submitVote('not_helpful');
+    });
+
+});
+</script>
+
+<%- include('partials/footer') %>

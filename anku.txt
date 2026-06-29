@@ -1,0 +1,45 @@
+Dynamic MongoDB FAQ Platform Conversion Changelog
+==================================================
+
+Date: June 1, 2026
+
+FILES MODIFIED:
+1. c:\Users\Ankit\OneDrive\Desktop\ankitsingh06\server.js
+   - Updated "/faqs" route to query MongoDB and retrieve all published FAQs.
+   - Formatted and grouped FAQs by category.
+   - Extracted unique tag list, category metadata, and total FAQ count for sidebar.
+   - Added a new dynamic route "/faqs/:slug" to serve individual FAQ articles.
+   - Implemented sequential prev/next navigation within the dynamic single FAQ page.
+   - Structured dynamic SEO metadata including meta titles, meta descriptions, canonical URLs, robots tags, and keywords.
+   - Handled 404 page rendering for invalid slugs.
+
+2. c:\Users\Ankit\OneDrive\Desktop\ankitsingh06\views\faqs.ejs
+   - Replaced 1300+ lines of static hardcoded HTML FAQ accordion items with a dynamic EJS loop.
+   - Implemented category visual style mapping (custom icons, colors, accordion IDs, index prefixes).
+   - Preserved all original bootstrap accordion behaviors, CSS classes, schema attributes, and fade-in scroll animations.
+   - Dynamically generated category filter pills and quick jump links with question counts.
+   - Dynamically generated popular "Most Read FAQs" and the tag topic cloud.
+
+3. c:\Users\Ankit\OneDrive\Desktop\ankitsingh06\views\faqs-details.ejs
+   - Converted the standalone hardcoded page to a fully dynamic EJS template.
+   - Injected dynamic meta titles, canonical links, OG and Twitter card tags.
+   - Constructed rich, valid JSON-LD schemas dynamically (QAPage, Article, BreadcrumbList) using MongoDB FAQ content.
+   - Rendered HTML content dynamically using EJS unescaped output (<%- faq.answer %>).
+   - Populated question details card dynamically with category name, difficulty style, formatted date, and read time.
+   - Implemented dynamic related questions accordion and dynamic prev/next sequential links.
+
+FILES CREATED:
+1. c:\Users\Ankit\OneDrive\Desktop\ankitsingh06\seed-faqs.js
+   - Seed script that connects to MongoDB Atlas using .env variables.
+   - Resets the FAQ collection and seeds all 26 official FAQs.
+   - Captures exact accordion paragraph answers, slugs, categories, and tags.
+   - Stores the full premium HTML article body for the "llm-seo" detail view.
+
+2. c:\Users\Ankit\OneDrive\Desktop\ankitsingh06\anku.txt
+   - This change log documenting all files added and modified.
+
+VERIFICATION DETAILS:
+- Successfully seeded 26 FAQs using `node seed-faqs.js`.
+- Successfully started the Express server.
+- Verified successful connection to MongoDB Atlas.
+- Verified that all accordion behaviors, category filter pills, search functionality, and dynamic page routing compile and run without any errors.
