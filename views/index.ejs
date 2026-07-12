@@ -823,6 +823,75 @@
             <hr class="mt-5 mb-4 border-white opacity-10">
 
         </div>
+
+        <!-- chatbot start ui here -->
+        <!-- <button id="aksChatToggle"><i class="fa-solid fa-robot"></i></button> -->
+         <button id="aksChatToggle">
+  <svg class="aks-spark" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g class="mark glow">
+      <!-- outer thin orbit ring with two nodes -->
+      <g class="orbit">
+        <ellipse class="ring" cx="100" cy="100" rx="72" ry="30"/>
+        <circle class="node" cx="172" cy="100" r="3"/>
+        <circle class="node" cx="28" cy="100" r="3"/>
+      </g>
+
+      <!-- second orbit ring rotated, opposite spin -->
+      <g class="orbit2">
+        <ellipse class="ring" cx="100" cy="100" rx="30" ry="72" transform="rotate(20 100 100)"/>
+        <circle class="node" cx="100" cy="28" r="2.5"/>
+        <circle class="node" cx="100" cy="172" r="2.5"/>
+      </g>
+
+      <!-- central 4 point spark, the AI core -->
+      <path d="M100,55
+               C106,90 110,94 145,100
+               C110,106 106,110 100,145
+               C94,110 90,106 55,100
+               C90,94 94,90 100,55 Z"
+            class="core"/>
+
+      <!-- tiny secondary spark, offset, gives depth -->
+      <path d="M138,62
+               C140,72 142,74 152,76
+               C142,78 140,80 138,90
+               C136,80 134,78 124,76
+               C134,74 136,72 138,62 Z"
+            class="core" opacity="0.9"/>
+    </g>
+  </svg>
+</button>
+
+<div id="aksChatPanel">
+  <div class="aks-chat-header">
+    <div class="bot-icon"><i class="fa-solid fa-robot"></i></div>
+    <div>
+      <p class="title">AI Assistant</p>
+      <span class="status">Online • Ready to help</span>
+    </div>
+    <button class="aks-chat-close" id="aksChatClose"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <div class="aks-chat-body" id="aksChatBody">
+    <div class="aks-msg bot">Hi! I'm <b>Ankit's AI assistant</b>. How can I help you today?</div>
+  </div>
+  <div class="aks-chat-input-row">
+    <input type="text" id="aksChatInput" placeholder="Ask me anything...">
+    <button id="aksChatSend"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+  <div class="aks-chat-footer">Powered by AI • Built with Ankit Singh </div>
+</div>
+
+<script>
+  document.getElementById('aksChatToggle').addEventListener('click', () => {
+    document.getElementById('aksChatPanel').classList.toggle('open');
+  });
+  document.getElementById('aksChatClose').addEventListener('click', () => {
+    document.getElementById('aksChatPanel').classList.remove('open');
+  });
+</script>
+
+<!-- chatbot end here -->
     </footer>
 <script>
 
@@ -925,3 +994,4 @@ emailInput.addEventListener("blur", async () => {
   ]
 }
 </script>
+<script src="/js/ai.js"></script>

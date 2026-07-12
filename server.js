@@ -26,6 +26,8 @@ const compression = require("compression");
 const { body, validationResult } = require("express-validator");
 const multer = require("multer");
 const sanitizeHtml = require("sanitize-html");
+// const { GoogleGenAI } = require("@google/genai");
+const myInfo = require("./ai/myInfo");
 // const validateEmail = require("deep-email-validator");
 
 // Models
@@ -37,8 +39,13 @@ const PageView = require("./models/PageView");
 
 // Middleware
 const { requireAdmin } = require("./middleware/auth");
-
+const aiRoutes = require("./routes/ai");
 const app = express();
+
+// const ai = new GoogleGenAI({
+//    apiKey: process.env.CODE_API_AKS,
+// });
+
 const isProd = process.env.NODE_ENV === "production";
 // app.set('trust proxy', isProd ? 1 : false);
 const PORT = process.env.PORT || 3000;
@@ -166,18 +173,18 @@ const apiLimiter = rateLimit({
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 
-// 1. Cloudinary को कॉन्फ़िगर करें (ये .env से Keys उठाएगा)
+// 1. Cloudinary
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// 2. नया Storage (यह diskStorage की जगह लेगा और सीधा क्लाउड पर भेजेगा)
+// 2. 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "aks-blog-images", // Cloudinary में तुम्हारा फोल्डर
+    folder: "aks-blog-images", // Cloudinary
     allowed_formats: ["jpeg", "jpg", "png", "gif", "webp"],
     public_id: (req, file) => {
       const safeName = file.originalname
@@ -190,7 +197,7 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB लिमिट
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 // ─── Sanitize Helper ──────────────────────────────────────────────────────────
@@ -1810,7 +1817,7 @@ app.get("/api/dhanrubi/analytics/log", requireAdmin, async (req, res) => {
     res.json({ success: false, data: [] });
   }
 });
-
+app.use("/api", aiRoutes);
 app.use((req, res) => {
   res
     .status(404)
@@ -1818,6 +1825,7 @@ app.use((req, res) => {
     .render("404", { message: "Page not found" });
 });
 // ─── Start Server ─────────────────────────────────────────────────────────────
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

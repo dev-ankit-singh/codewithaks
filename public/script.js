@@ -171,18 +171,18 @@ $(document).ready(function() {
 
 
 
-//   var typed = new Typed("#typing-text", {
-//     strings: [
-//       "FULL STACK DEVELOPER",
-//       "FRONTEND DEVELOPER",
-//       "BACKEND DEVELOPER",
-//       "SEO DEVELOPER"
-//     ],
-//     typeSpeed: 60,     
-//     backSpeed: 40,     
-//     backDelay: 1500,   
-//     loop: true         
-//   });
+  var typed = new Typed("#typing-text", {
+    strings: [
+      "FULL STACK DEVELOPER",
+      "FRONTEND DEVELOPER",
+      "BACKEND DEVELOPER",
+      "SEO DEVELOPER"
+    ],
+    typeSpeed: 60,     
+    backSpeed: 40,     
+    backDelay: 1500,   
+    loop: true         
+  });
 
 
 
