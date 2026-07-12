@@ -883,12 +883,19 @@
 </div>
 
 <script>
-  document.getElementById('aksChatToggle').addEventListener('click', () => {
-    document.getElementById('aksChatPanel').classList.toggle('open');
-  });
-  document.getElementById('aksChatClose').addEventListener('click', () => {
-    document.getElementById('aksChatPanel').classList.remove('open');
-  });
+ const chatToggle = document.getElementById("aksChatToggle");
+const chatPanel = document.getElementById("aksChatPanel");
+const chatClose = document.getElementById("aksChatClose");
+
+chatToggle.addEventListener("click", () => {
+    chatPanel.classList.add("open");
+    chatToggle.classList.add("hidden");
+});
+
+chatClose.addEventListener("click", () => {
+    chatPanel.classList.remove("open");
+    chatToggle.classList.remove("hidden");
+});
 </script>
 
 <!-- chatbot end here -->

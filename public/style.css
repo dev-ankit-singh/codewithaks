@@ -622,7 +622,7 @@ a, button, input, textarea {
 
   #aksChatPanel {
     position: fixed;
-    bottom: 100px;
+    bottom: 10px;
     right: 24px;
     width: 360px;
     max-width: calc(100vw - 24px);
@@ -752,8 +752,8 @@ a, button, input, textarea {
   @media (max-width: 480px) {
     #aksChatPanel {
       width: calc(100vw - 20px);
-      right: 10px;
-      bottom: 90px;
+      right: 13px;
+      bottom: 28px;
       height: calc(100vh - 130px);
     }
     #aksChatToggle { bottom: 16px; right: 16px; }
@@ -850,5 +850,8 @@ a, button, input, textarea {
 }
 @keyframes aksSparkSpinRev {
   to { transform: rotate(-360deg); }
+}
+.hidden {
+    display: none !important;
 }
 /* button icon designe css end here  */
